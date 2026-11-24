@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enzymes: Your Body's Wingmen</title>
+<meta name="description" content="An interactive Form 4 Human and Social Biology explainer on enzymes and metabolism.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFF7EC; --card:#FFFFFF; --ink:#211A33; --soft:#5E5672; --line:#EADFCC;
+  --mango:#FF8A1F; --hib:#E8406E; --lime:#22A863; --sea:#1E8FD0; --grape:#6C4AB6;
+  --night:#24173F; --night2:#3A2566; --gold:#FFC93C;
+  --ok:#1E9E5A; --okbg:#E4F7EC; --bad:#D6334F; --badbg:#FDE8EC;
+  --r:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;font-size:18px;line-height:1.5;-webkit-text-size-adjust:100%}
+h1,h2,h3,.disp{font-family:"Baloo 2","Trebuchet MS","Segoe UI",system-ui,sans-serif;line-height:1.1;margin:0}
+button{font:inherit;cursor:pointer}
+canvas{display:block;max-width:100%}
+#lock{touch-action:none;cursor:grab}
+.draw{stroke-dasharray:1200;stroke-dashoffset:1200;animation:draw 2.6s ease forwards}
+.draw2{animation-delay:1.4s}
+.fadein{opacity:0;animation:fi .6s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fi{to{opacity:1}}
+.step{scroll-margin-top:74px}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:rgba(255,247,236,.94);backdrop-filter:blur(6px);border-bottom:2px solid var(--line)}
+.top-in{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:8px 14px}
+.brand{font-family:"Baloo 2","Trebuchet MS",sans-serif;font-weight:800;font-size:20px;white-space:nowrap}
+.brand span{color:var(--grape)}
+.dots{display:flex;gap:6px;flex:1;justify-content:flex-end;flex-wrap:wrap}
+.dot{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:#fff;font-weight:800;font-size:14px;color:var(--soft);display:grid;place-items:center;padding:0}
+.dot.done{background:var(--lime);border-color:var(--lime);color:#fff}
+.dot.cur{border-color:var(--grape);color:var(--grape);box-shadow:0 0 0 3px rgba(108,74,182,.18)}
+.dot.done.cur{color:#fff}
+
+main{max-width:980px;margin:0 auto;padding:18px 14px 80px}
+.sec{display:none}
+.sec.on{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.sec-head{margin:6px 0 14px}
+.kicker{font-weight:800;color:var(--mango);text-transform:uppercase;letter-spacing:.08em;font-size:14px}
+.sec-head h2{font-size:34px;margin-top:2px}
+.sec-head p{margin:6px 0 0;color:var(--soft)}
+
+.step{display:none;margin:0 0 18px}
+.step.on{display:block;animation:fadeUp .45s ease}
+.card{background:var(--card);border:2px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:0 3px 0 var(--line)}
+.card.night{background:var(--night);border-color:var(--night2);color:#fff;box-shadow:0 3px 0 #120a24}
+.tag{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:99px;margin-bottom:8px}
+.tag.see{background:#EDE6FA;color:var(--grape)}
+.tag.read{background:#FFEBD6;color:#B85A00}
+.tag.quiz{background:#DDF3FF;color:#0B6C9E}
+.tag.think{background:#FFE3EA;color:var(--hib)}
+.tag.predict{background:#FFF3C4;color:#8A6400}
+
+.text p{margin:0 0 10px;font-size:19px}
+.text p:last-child{margin-bottom:0}
+.big{font-size:22px !important;font-weight:700}
+.wing{display:flex;gap:12px;align-items:flex-start;background:#F3EEFF;border-radius:14px;padding:12px 14px;margin-top:12px}
+.wing .face{flex:0 0 48px}
+.wing p{margin:0;font-size:17px}
+.term{border-bottom:2px dotted var(--grape);color:var(--grape);font-weight:800;cursor:help;position:relative}
+.tip{position:absolute;z-index:40;background:var(--ink);color:#fff;font-size:15px;font-weight:600;padding:8px 10px;border-radius:10px;max-width:260px;box-shadow:0 6px 20px rgba(0,0,0,.25);pointer-events:none}
+
+.next-row{display:flex;justify-content:center;margin-top:14px}
+.btn{border:none;border-radius:99px;padding:12px 22px;font-weight:800;font-size:18px;background:var(--grape);color:#fff;box-shadow:0 3px 0 #4A2F86;transition:transform .08s}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #4A2F86}
+.btn:disabled{background:#BDB4CF;box-shadow:0 3px 0 #A39AB6;cursor:not-allowed}
+.btn.alt{background:#fff;color:var(--grape);border:2px solid var(--grape);box-shadow:0 3px 0 #D4C8EE}
+.btn.mango{background:var(--mango);box-shadow:0 3px 0 #C25F00}
+.btn.sm{padding:8px 14px;font-size:16px}
+.hint{font-size:15px;color:var(--soft);text-align:center;margin-top:8px}
+
+.ctrls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;margin-top:12px}
+.seg{display:inline-flex;border:2px solid var(--grape);border-radius:99px;overflow:hidden}
+.seg button{border:none;background:#fff;color:var(--grape);font-weight:800;padding:8px 14px;font-size:16px}
+.seg button.on{background:var(--grape);color:#fff}
+.night .seg{border-color:var(--gold)}
+.night .seg button{background:transparent;color:var(--gold)}
+.night .seg button.on{background:var(--gold);color:var(--night)}
+.stepper{display:inline-flex;align-items:center;gap:8px;font-weight:800}
+.stepper button{width:44px;height:44px;border-radius:50%;border:none;background:var(--mango);color:#fff;font-size:24px;font-weight:900;line-height:1}
+.stepper .val{min-width:44px;text-align:center;font-size:20px}
+
+/* stage canvases */
+.stage{position:relative;border-radius:14px;overflow:hidden}
+.stage canvas{width:100%;height:auto}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:700px){.two{grid-template-columns:1fr}}
+.cap{font-weight:800;text-align:center;margin:6px 0 4px}
+.readout{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:8px}
+.pill{background:#F4EFE6;border-radius:99px;padding:6px 14px;font-weight:800;font-size:16px}
+.night .pill{background:rgba(255,255,255,.12)}
+.pill b{color:var(--mango)}
+.say{min-height:52px;text-align:center;font-weight:800;font-size:18px;margin-top:10px;color:var(--grape)}
+.night .say{color:var(--gold)}
+
+/* body map */
+.bodymap{display:grid;grid-template-columns:minmax(220px,340px) 1fr;gap:16px;align-items:center}
+@media (max-width:700px){.bodymap{grid-template-columns:1fr}}
+.bodysvg{width:100%;max-width:340px;margin:0 auto;display:block}
+.hot{cursor:pointer}
+.hot circle.ring{animation:pulse 1.6s infinite;transform-box:fill-box;transform-origin:center}
+.hot.seen circle.core{fill:var(--lime)}
+@keyframes pulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.2);opacity:0}}
+.panel{min-height:250px;display:flex;flex-direction:column;justify-content:center}
+.panel .ph{color:var(--soft);text-align:center;font-weight:700}
+.panel h3{font-size:24px;margin:6px 0}
+.panel p{margin:6px 0 0;font-size:17px}
+.btag{font-size:13px;font-weight:900;letter-spacing:.06em;padding:3px 10px;border-radius:99px;color:#fff;display:inline-block}
+.btag.brk{background:var(--mango)}
+.btag.bld{background:var(--lime)}
+.counter{font-weight:800;color:var(--soft);text-align:center;margin-top:8px}
+.off-state .hot circle.core{fill:#999}
+
+/* quiz */
+.q{margin:0 0 16px}
+.q:last-child{margin-bottom:0}
+.qtext{font-weight:800;font-size:19px;margin-bottom:8px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px 14px;font-size:17px;font-weight:700;color:var(--ink);display:flex;gap:10px;align-items:flex-start}
+.opt:hover{border-color:#CFC2EE}
+.opt .l{flex:0 0 28px;height:28px;border-radius:50%;background:#F1ECFA;color:var(--grape);display:grid;place-items:center;font-weight:900;font-size:15px}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.right .l{background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--bad);background:var(--badbg);opacity:.85}
+.opt.wrong .l{background:var(--bad);color:#fff}
+.opt.locked{pointer-events:none}
+.fb{margin-top:8px;border-radius:12px;padding:10px 12px;font-size:16px;font-weight:700;display:none}
+.fb.on{display:block}
+.fb.good{background:var(--okbg);color:#11663A}
+.fb.try{background:var(--badbg);color:#9B1C33}
+.fb.neutral{background:#FFF3C4;color:#6E5000}
+.qscore{text-align:center;font-weight:800;color:var(--soft);margin-top:6px}
+
+.sort{display:grid;gap:8px}
+.sitem{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff}
+.sitem .st{font-weight:800;font-size:17px;flex:1 1 200px}
+.sitem .sb{display:flex;gap:6px}
+.sitem .sb button{border:2px solid var(--line);background:#fff;border-radius:99px;padding:6px 12px;font-weight:800;font-size:15px}
+.sitem.right{border-color:var(--ok);background:var(--okbg)}
+.sitem.wrongtry{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* explain box */
+.explain textarea{width:100%;min-height:110px;border:2px solid var(--line);border-radius:14px;padding:12px;font:inherit;font-size:17px;resize:vertical}
+.explain textarea:focus{outline:none;border-color:var(--grape)}
+.ebtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.eres{display:none;margin-top:12px}
+.eres.on{display:block}
+.pts{list-style:none;padding:0;margin:8px 0}
+.pts li{display:flex;gap:10px;align-items:flex-start;padding:6px 0;font-weight:700;font-size:16px}
+.pts li .bx{flex:0 0 26px;height:26px;border-radius:8px;border:2px solid var(--line);display:grid;place-items:center;font-weight:900;cursor:pointer;background:#fff}
+.pts li.hit .bx{background:var(--ok);border-color:var(--ok);color:#fff}
+.model{background:#F3EEFF;border-radius:12px;padding:10px 12px;font-size:16px;margin-top:8px}
+.small{font-size:15px;color:var(--soft)}
+.toast{visibility:hidden;position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(100px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:99px;font-weight:800;z-index:60;transition:transform .3s;max-width:92vw;text-align:center}
+.toast.on{visibility:visible;transform:translateX(-50%) translateY(0)}
+
+/* cards grid */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:760px){.grid3{grid-template-columns:1fr}}
+.mini{border:2px solid var(--line);border-radius:16px;padding:14px;background:#fff}
+.mini .ic{font-size:34px;line-height:1}
+.mini h3{font-size:21px;margin:6px 0}
+.mini p{margin:0;font-size:16px}
+.danger{background:#2B0F18;color:#fff;border:2px solid var(--hib);border-radius:var(--r);padding:18px}
+.danger h3{color:#FF8BA7;font-size:26px}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:12px 0}
+.flow span{background:rgba(255,255,255,.1);border-radius:12px;padding:8px 10px;font-weight:800;font-size:15px}
+.flow i{font-style:normal;color:var(--gold);font-weight:900}
+
+/* tokens */
+.tokens{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:10px}
+.token{border:2px solid var(--line);background:#fff;border-radius:16px;padding:10px 14px;font-weight:800;font-size:16px;display:flex;flex-direction:column;align-items:center;min-width:120px}
+.token .em{font-size:30px}
+.token small{font-weight:700;color:var(--soft);font-size:13px}
+.token.right{border-color:var(--ok);background:var(--okbg)}
+.token.wrongtry{animation:shake .35s;border-color:var(--bad)}
+
+/* pH */
+.phzones{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.phzones button{border:2px solid var(--line);background:#fff;border-radius:14px;padding:10px 14px;font-weight:800;font-size:16px;min-width:130px}
+.phzones button.on{border-color:var(--grape);background:#F3EEFF}
+.phzones button small{display:block;color:var(--soft);font-weight:700}
+.encards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media (max-width:560px){.encards{grid-template-columns:1fr}}
+.encard{border:2px solid var(--line);border-radius:16px;padding:12px;text-align:center;background:#fff}
+.encard h3{font-size:20px}
+.bar{height:18px;border-radius:99px;background:#F0E8DA;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--lime);border-radius:99px;transition:width .6s ease}
+
+/* temp slider */
+.slider{width:100%;accent-color:var(--hib);height:36px}
+.tempwrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:center}
+@media (max-width:700px){.tempwrap{grid-template-columns:1fr}}
+.tval{font-family:"Baloo 2",sans-serif;font-size:38px;font-weight:800;text-align:center}
+
+/* summary rules */
+.rules{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media (max-width:600px){.rules{grid-template-columns:1fr}}
+.rule{display:flex;gap:10px;align-items:flex-start;border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff}
+.rule .n{flex:0 0 34px;height:34px;border-radius:50%;background:var(--grape);color:#fff;display:grid;place-items:center;font-weight:900}
+.rule p{margin:0;font-size:16px}
+
+/* hero */
+.hero{text-align:center;padding:10px 0}
+.hero h1{font-size:46px}
+.hero h1 span{color:var(--grape)}
+.hero p{font-size:20px;color:var(--soft);max-width:620px;margin:10px auto}
+.navrow{display:flex;justify-content:space-between;gap:10px;margin-top:24px;border-top:2px dashed var(--line);padding-top:16px}
+.result-big{font-family:"Baloo 2",sans-serif;font-size:54px;font-weight:800;text-align:center;color:var(--grape)}
+input.name{font:inherit;font-size:18px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;width:100%;max-width:360px}
+@media (max-width:520px){body{font-size:17px}.sec-head h2{font-size:28px}.hero h1{font-size:36px}.brand{font-size:17px}.dot{width:28px;height:28px;font-size:12px}.text p{font-size:18px}}
+
+@media (max-width:600px){.brand{display:none}.dots{justify-content:center;flex-wrap:nowrap;gap:5px}.dot{width:31px;height:31px;font-size:13px}.panel{min-height:120px}}
+
+/* points */
+.score{margin-left:auto;text-align:right;line-height:1.1}
+.chip{display:inline-block;background:var(--mango,#FFB020);color:#3a2300;font-weight:900;font-size:15px;padding:5px 11px;border-radius:99px;white-space:nowrap}
+.chip.bump{animation:bump .5s}
+@keyframes bump{40%{transform:scale(1.25)}}
+.rank{font-size:11px;font-weight:800;color:var(--soft);margin-top:2px}
+.sbar{height:5px;background:var(--line)}
+#sbarFill{height:100%;width:0;background:linear-gradient(90deg,var(--lime),var(--grape));transition:width .5s}
+.scorepop{position:fixed;z-index:70;font-weight:900;font-size:22px;color:var(--lime);text-shadow:0 1px 0 #fff;pointer-events:none;animation:pop 1.3s ease-out forwards}
+@keyframes pop{to{transform:translateY(-46px);opacity:0}}
+.dot{background:conic-gradient(var(--lime) var(--p,0%),#fff 0)}
+.dot.cur{background:conic-gradient(var(--lime) var(--p,0%),#fff 0)}
+.dot.done{background:var(--lime)}
+select.name{font:inherit;font-size:18px;background:#fff}
+.partrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-weight:700}
+@media (max-width:600px){.rank{display:none}.chip{font-size:13px;padding:4px 8px}.top-in{gap:6px;padding:8px 8px}}
+@media (max-width:600px){.dots{min-width:0;flex:1;gap:3px!important}.dot{width:24px!important;height:24px!important;font-size:11px!important;border-width:1.5px}.score{flex:none}}
+
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="wm" viewBox="-50 -50 100 100"><path id="wmBody" fill="#6C4AB6"/>
+      <g transform="translate(0 6.4)"><rect x="-26" y="-6" width="22" height="13" rx="5" fill="#1b1230"/><rect x="4" y="-6" width="22" height="13" rx="5" fill="#1b1230"/><rect x="-6" y="-3" width="12" height="3" fill="#1b1230"/>
+      <path d="M-12 18 Q0 27 12 18" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></g></symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand">Your Body's <span>Wingmen</span></div>
+    <nav class="dots" id="dots" aria-label="Sections"></nav>
+    <div class="score"><div class="chip" id="scoreChip">⭐ 0 / 100</div><div class="rank" id="rankTxt"></div></div>
+  </div>
+  <div class="sbar"><div id="sbarFill"></div></div>
+</header>
+
+<main>
+
+<!-- ============ 0 HOME ============ -->
+<section class="sec" id="s0" data-title="Start">
+  <div class="hero">
+    <svg width="130" height="130" style="margin:0 auto;display:block"><use href="#wm"/></svg>
+    <h1>Your Body's<br><span>Wingmen</span></h1>
+    <p>Right now, thousands of chemical reactions are happening inside your body. Something is making every one of them happen. Let's go and find it.</p>
+    <p class="small">About 30 minutes · Tap, drag and guess · Works on phone or laptop</p>
+    <div class="who card on" style="text-align:left;max-width:420px;margin:14px auto 0">
+      <p style="margin:0 0 6px;font-weight:800">Earn up to 100 points ⭐ Add your name and class first so your points count.</p>
+      <input class="name" id="whoName" placeholder="First and last name" autocomplete="name">
+      <select class="name" id="whoClass" style="margin-top:8px"></select>
+    </div>
+    <div class="next-row"><button class="btn mango" id="startBtn" onclick="jump(1)" disabled>Let's go ▸</button></div>
+    <p class="small">Joining late? Start with Part 1 or jump to where your class is using the numbers at the top. Come back later for the parts you missed.</p>
+  </div>
+</section>
+
+<!-- ============ 1 METABOLISM ============ -->
+<section class="sec" id="s1" data-title="Your busy body">
+  <div class="sec-head"><div class="kicker">Part 1</div><h2>Your body is busy</h2></div>
+
+  <div class="step card">
+    <span class="tag see">👀 Look</span>
+    <p class="big" style="margin:0 0 10px">Tap each glowing spot. See what is happening inside you right now.</p>
+    <div class="bodymap" id="bm1">
+      <div class="bmsvg"></div>
+      <div class="panel" id="bm1panel"><div class="ph">👈 Tap a glowing spot on the body</div></div>
+    </div>
+    <div class="counter" id="bm1count">0 of 5 explored</div>
+    <div class="next-row"><button class="btn nx" data-gate="body" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card text">
+    <span class="tag read">📖 Read</span>
+    <p>Every spot you tapped is a <b>chemical reaction</b>. A chemical reaction is when one substance is changed into a different substance.</p>
+    <p class="big">All the chemical reactions in your body, added together, are called <span class="term" data-def="All the chemical reactions that happen in the body.">metabolism</span>.</p>
+    <p>Some reactions <b>break big molecules into small ones</b>, like starch into sugar. These are <span class="term" data-def="Reactions that break big molecules down into smaller ones.">catabolic</span> reactions. Remember it as <b>Catabolic = Cut</b>.</p>
+    <p>Some reactions <b>build big molecules from small ones</b>, like protein for muscle. These are <span class="term" data-def="Reactions that build big molecules up from smaller ones.">anabolic</span> reactions. Remember it as <b>Anabolic = Add on</b>.</p>
+    <div class="wing"><svg class="face" width="48" height="48"><use href="#wm"/></svg><p><b>Try it:</b> chew a plain cracker or a piece of bread for a full minute without swallowing. Does it start to taste a little sweet? That is the reaction from the mouth spot, happening on your tongue.</p></div>
+    <div class="next-row"><button class="btn nx">Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag quiz">✅ Quick check</span>
+    <p class="qtext">Is each reaction breaking down or building up?</p>
+    <div data-sort="s1"></div>
+    <div class="next-row"><button class="btn nx" data-gate="sort-s1" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card text">
+    <span class="tag read">📖 One more thing</span>
+    <p class="big">Here is the question: what makes all these reactions happen so fast?</p>
+    <p>Starch left in a bowl of water would take years to turn into sugar by itself. In your mouth, it starts in seconds. Something in your body is helping. Let's meet it.</p>
+    <div class="navrow"><span></span><button class="btn" onclick="go(2)">Next: Meet the wingman ▸</button></div>
+  </div>
+</section>
+
+<!-- ============ 2 WINGMAN ============ -->
+<section class="sec" id="s2" data-title="Meet the wingman">
+  <div class="sec-head"><div class="kicker">Part 2</div><h2>Meet the wingman</h2></div>
+
+  <div class="step card night">
+    <span class="tag see">👀 Watch</span>
+    <p style="margin:0 0 10px;font-size:19px">At a fete, two people who would get along might never find each other in the crowd. A <b style="color:var(--gold)">wingman</b> changes that. He finds the right people and brings them together. He can also help his friend get out of a bad match.</p>
+    <div class="ctrls" style="margin-top:0">
+      <div class="seg" id="raceMode"><button class="on" data-m="join">💞 Joining</button><button data-m="split">💔 Splitting</button></div>
+      <button class="btn mango sm" id="raceGo">▶ Start the fete</button>
+    </div>
+    <div class="two" style="margin-top:12px">
+      <div><div class="cap">No wingman</div><div class="stage"><canvas id="raceA" width="440" height="300"></canvas></div><div class="readout"><span class="pill" id="raceAc">Done: 0</span></div></div>
+      <div><div class="cap">With 2 wingmen 😎</div><div class="stage"><canvas id="raceB" width="440" height="300"></canvas></div><div class="readout"><span class="pill" id="raceBc">Done: 0</span><span class="pill" id="raceBr">Each wingman reused: 0×</span></div></div>
+    </div>
+    <div class="say" id="raceSay">Press start. Watch both sides.</div>
+    <div class="next-row"><button class="btn nx" data-gate="race" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card text">
+    <span class="tag read">📖 Read</span>
+    <p class="big">That wingman is an <span class="term" data-def="A protein that speeds up a chemical reaction in the body without being used up.">enzyme</span>. An enzyme is a protein that speeds up a chemical reaction in your body.</p>
+    <p>Anything that speeds up a reaction <b>without being used up</b> is called a <span class="term" data-def="A substance that speeds up a reaction without being used up.">catalyst</span>. So enzymes are <b>biological catalysts</b>.</p>
+    <p>Did you notice that the <b>same</b> two wingmen helped pair after pair? Enzymes are not used up. Each one works again and again, thousands of times a second.</p>
+    <p>And the wingman worked both ways: <b>joining</b> (building up, anabolic) and <b>splitting</b> (breaking down, catabolic).</p>
+    <div class="next-row"><button class="btn nx">Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag see">👀 Try it</span>
+    <p class="big" style="margin:0 0 6px">So how does an enzyme make a reaction faster?</p>
+    <p style="margin:0 0 10px">Every reaction has to get over a hill of energy before it can happen. Give the ball a push. Then switch the enzyme on and push again.</p>
+    <div class="stage"><canvas id="hill" width="760" height="330"></canvas></div>
+    <div class="ctrls">
+      <div class="seg" id="hillMode"><button class="on" data-m="0">No enzyme</button><button data-m="1">😎 With enzyme</button></div>
+      <button class="btn mango sm" id="hillPush">👉 Push the ball</button>
+    </div>
+    <div class="say" id="hillSay">Same push every time. Try it without the enzyme first.</div>
+    <div class="next-row"><button class="btn nx" data-gate="hill" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card text">
+    <span class="tag read">📖 Read</span>
+    <p>Before any reaction can happen, the molecules need a starting amount of energy. This is called the <span class="term" data-def="The energy needed to start a reaction. The height of the hill.">activation energy</span>. It is the hill the reaction must climb.</p>
+    <p class="big">An enzyme lowers the activation energy.</p>
+    <p>The start and the finish stay exactly the same. The enzyme only makes the path easier, so the reaction happens much faster.</p>
+    <div class="wing"><svg class="face" width="48" height="48"><use href="#wm"/></svg><p>Talking to someone new has an awkward hill to climb. A good wingman lowers the awkwardness. He does not change who the two people are. He just makes it easier for them to meet.</p></div>
+    <div class="next-row"><button class="btn nx">Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag quiz">✅ Quick check</span>
+    <div data-quiz="s2"></div>
+    <div class="next-row"><button class="btn nx" data-gate="quiz-s2" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag think">✍️ Explain it</span>
+    <div data-explain="s2"></div>
+    <div class="navrow"><span></span><button class="btn" onclick="go(3)">Next: Shape matters ▸</button></div>
+  </div>
+</section>
+
+<!-- ============ 3 LOCK & KEY ============ -->
+<section class="sec" id="s3" data-title="Shape matters">
+  <div class="sec-head"><div class="kicker">Part 3</div><h2>Shape matters</h2></div>
+
+  <div class="step card">
+    <span class="tag predict">🤔 Guess first</span>
+    <p class="big" style="margin:0 0 10px">This enzyme works on only one of these three molecules. Which one do you think it is?</p>
+    <div class="stage" style="background:#FBF6EE"><canvas id="lock" width="760" height="420"></canvas></div>
+    <div data-predict="s3"></div>
+    <div class="say" id="lockSay"></div>
+    <div class="next-row"><button class="btn nx" data-gate="lock" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card text">
+    <span class="tag read">📖 Read</span>
+    <p>The pocket on the enzyme is called the <span class="term" data-def="The pocket on an enzyme where the substrate fits.">active site</span>.</p>
+    <p>The molecule that the enzyme works on is called the <span class="term" data-def="The substance an enzyme acts on.">substrate</span>.</p>
+    <p class="big">The substrate fits because its shape is <span class="term" data-def="Two shapes that fit together exactly, like puzzle pieces.">complementary</span> to the active site.</p>
+    <p>Complementary means the two shapes fit together exactly, like two puzzle pieces. A shape that is <i>nearly</i> right is not good enough. That is why only one molecule worked.</p>
+    <div class="wing"><svg class="face" width="48" height="48"><use href="#wm"/></svg><p>Our wingman is picky. He only works for the one pair that fits.</p></div>
+    <div class="next-row"><button class="btn nx">Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag see">👀 Watch</span>
+    <p class="big" style="margin:0 0 10px">Now watch the whole reaction in slow motion.</p>
+    <div class="stage" style="background:#FBF6EE"><canvas id="slowmo" width="760" height="340"></canvas></div>
+    <div class="ctrls"><button class="btn mango sm" id="slowGo">▶ Play slow motion</button></div>
+    <div class="next-row"><button class="btn nx" data-gate="slow" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card text">
+    <span class="tag read">📖 Read</span>
+    <p>When the substrate is sitting in the active site, the two together are called the <span class="term" data-def="The enzyme and substrate joined together while the reaction happens.">enzyme–substrate complex</span>.</p>
+    <p>While they are together, the substrate is changed into new substances called <span class="term" data-def="The new substances made by a reaction.">products</span>. The products leave, and the enzyme is ready for the next substrate.</p>
+    <p class="big">This idea is called the lock and key model. The active site is the lock. The substrate is the key.</p>
+    <div class="next-row"><button class="btn nx">Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag see">👀 Spot the pattern</span>
+    <p class="big" style="margin:0 0 10px">Look at the names of these enzymes. What do you notice?</p>
+    <div class="grid3" style="grid-template-columns:repeat(2,1fr)">
+      <div class="mini"><div class="ic">🍞</div><h3>amyl<u>ase</u></h3><p>works on <b>amyl</b>ose (starch)</p></div>
+      <div class="mini"><div class="ic">🍬</div><h3>sucr<u>ase</u></h3><p>works on <b>sucr</b>ose (table sugar)</p></div>
+      <div class="mini"><div class="ic">🧈</div><h3>lip<u>ase</u></h3><p>works on <b>lip</b>ids (fats and oils)</p></div>
+      <div class="mini"><div class="ic">🍗</div><h3>prote<u>ase</u></h3><p>works on <b>prote</b>in</p></div>
+    </div>
+    <p style="margin:12px 0 0">Most enzyme names end in <b>-ase</b>. The first part of the name often tells you the substrate.</p>
+    <div class="next-row"><button class="btn nx">Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag quiz">✅ Quick check</span>
+    <div data-quiz="s3"></div>
+    <div class="next-row"><button class="btn nx" data-gate="quiz-s3" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag think">✍️ Explain it</span>
+    <div data-explain="s3"></div>
+    <div class="navrow"><span></span><button class="btn" onclick="go(4)">Next: A crowded fete ▸</button></div>
+  </div>
+</section>
+
+<!-- ============ 4 COLLISIONS ============ -->
+<section class="sec" id="s4" data-title="A crowded fete">
+  <div class="sec-head"><div class="kicker">Part 4</div><h2>A crowded fete</h2></div>
+
+  <div class="step card">
+    <span class="tag predict">🤔 Guess first</span>
+    <p class="big" style="margin:0 0 10px">A box has only 3 enzymes. We keep adding more and more substrate. What will happen to the speed of the reaction?</p>
+    <div data-predict="s4"></div>
+    <div class="next-row"><button class="btn nx" data-gate="pred-s4" disabled>Test it ▸</button></div>
+  </div>
+
+  <div class="step card night">
+    <span class="tag see">👀 Experiment</span>
+    <p style="margin:0 0 8px;font-size:18px"><b>1.</b> Press <b>+</b> to add substrate, step by step, all the way up. Watch the speed. <b>2.</b> Then switch to double enzymes.</p>
+    <div class="stage"><canvas id="coll" width="760" height="380"></canvas></div>
+    <div class="ctrls">
+      <div class="stepper"><span>Substrate</span><button id="subMinus" aria-label="less substrate">−</button><span class="val" id="subVal">4</span><button id="subPlus" aria-label="more substrate">+</button></div>
+      <div class="seg" id="enzMode"><button class="on" data-m="3">3 enzymes</button><button data-m="6">6 enzymes</button></div>
+    </div>
+    <div class="readout">
+      <span class="pill">Speed: <b id="rateVal">0</b> reactions per second</span>
+      <span class="pill">Busy wingmen: <b id="busyVal">0/3</b></span>
+    </div>
+    <div class="say" id="collSay">Add substrate and watch the speed.</div>
+    <div class="next-row"><button class="btn nx" data-gate="coll" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card text">
+    <span class="tag read">📖 Read</span>
+    <p id="predBack4" class="big"></p>
+    <p>Molecules are always moving and bumping into each other. A reaction can only happen when a substrate bumps into an enzyme's active site. This bump is called a <span class="term" data-def="When molecules bump into each other. A reaction needs a collision.">collision</span>.</p>
+    <p>More substrate means more collisions, so the reaction speeds up. But once <b>every active site is busy</b>, adding more substrate cannot make it go any faster. The enzymes are already working as fast as they can.</p>
+    <p class="big">Adding more enzyme gives more active sites, so the top speed goes up.</p>
+    <div class="wing"><svg class="face" width="48" height="48"><use href="#wm"/></svg><p>A packed fete means more people bumping into each other. But there are only so many wingmen. When every wingman is busy, the extra people just have to wait their turn.</p></div>
+    <div class="next-row"><button class="btn nx">Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag see">👀 The graph</span>
+    <p class="big" style="margin:0 0 10px">This is how scientists draw what you just saw.</p>
+    <div id="concGraph"></div>
+    <div class="next-row"><button class="btn nx">Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag quiz">✅ Quick check</span>
+    <div data-quiz="s4"></div>
+    <div class="next-row"><button class="btn nx" data-gate="quiz-s4" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag think">✍️ Explain it</span>
+    <div data-explain="s4"></div>
+    <div class="navrow"><span></span><button class="btn" onclick="go(5)">Next: Too hot to work ▸</button></div>
+  </div>
+</section>
+
+<!-- ============ 5 TEMP & pH ============ -->
+<section class="sec" id="s5" data-title="Too hot to work">
+  <div class="sec-head"><div class="kicker">Part 5</div><h2>Too hot to work</h2></div>
+
+  <div class="step card">
+    <span class="tag predict">🤔 Guess first</span>
+    <p class="big" style="margin:0 0 10px">Our wingman is a protein. What do you think will happen if he gets very, very hot?</p>
+    <div data-predict="s5"></div>
+    <div class="next-row"><button class="btn nx" data-gate="pred-s5" disabled>Test it ▸</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag see">👀 Experiment</span>
+    <p style="margin:0 0 8px">Slide the temperature slowly from cold to very hot. Watch the enzyme's shape and the speed.</p>
+    <div class="tempwrap">
+      <div class="stage" style="background:#FBF6EE"><canvas id="temp" width="440" height="330"></canvas></div>
+      <div class="stage" style="background:#fff;border:2px solid var(--line)"><canvas id="tempGraph" width="440" height="330"></canvas></div>
+    </div>
+    <div class="tval" id="tVal">20 °C</div>
+    <input type="range" class="slider" id="tSlide" min="0" max="80" value="20" aria-label="temperature">
+    <div class="say" id="tSay"></div>
+    <div class="ctrls"><button class="btn alt sm" id="freshEnz" style="display:none">🔄 Get a fresh enzyme</button></div>
+    <div class="next-row"><button class="btn nx" data-gate="temp" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card text">
+    <span class="tag read">📖 Read</span>
+    <p id="predBack5" class="big"></p>
+    <p>Heat makes molecules move faster, so they collide more often. That is why the enzyme speeds up as it warms up.</p>
+    <p>The temperature where an enzyme works fastest is its <span class="term" data-def="The best conditions, where the enzyme works fastest.">optimum</span> temperature. For most enzymes in your body, that is about <b>37 °C</b>, which is your body temperature.</p>
+    <p class="big">Too much heat shakes the enzyme so hard that its shape changes. The active site no longer fits the substrate. We say the enzyme is <span class="term" data-def="An enzyme whose shape has been changed so the active site no longer fits the substrate.">denatured</span>.</p>
+    <div class="wing"><svg class="face" width="48" height="48"><use href="#wm"/></svg><p>Think of frying an egg. Egg white is protein. Once it turns white and solid in the pan, you cannot turn it back. That is protein losing its shape for good.</p></div>
+    <div class="next-row"><button class="btn nx">Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag quiz">✅ Quick check</span>
+    <div data-quiz="s5a"></div>
+    <div class="next-row"><button class="btn nx" data-gate="quiz-s5a" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag see">👀 Experiment</span>
+    <p class="big" style="margin:0 0 6px">Acid can change an enzyme's shape too.</p>
+    <p style="margin:0 0 10px">Send a mouthful of food on its journey. Tap each place and watch two enzymes: <b>amylase</b> from your saliva, and <b>pepsin</b> from your stomach.</p>
+    <div class="phzones" id="phZones">
+      <button data-ph="7">👄 Mouth<small>pH 7 · neutral</small></button>
+      <button data-ph="2">🫃 Stomach<small>pH 2 · very acidic</small></button>
+      <button data-ph="8">🌀 Small intestine<small>pH 8 · slightly alkaline</small></button>
+    </div>
+    <div class="encards">
+      <div class="encard"><h3>Amylase</h3><div class="small">digests starch</div><canvas id="phA" width="200" height="140" style="margin:0 auto"></canvas><div class="bar"><i id="phAbar" style="width:0"></i></div><div class="small" id="phAtxt">–</div></div>
+      <div class="encard"><h3>Pepsin</h3><div class="small">digests protein</div><canvas id="phP" width="200" height="140" style="margin:0 auto"></canvas><div class="bar"><i id="phPbar" style="width:0"></i></div><div class="small" id="phPtxt">–</div></div>
+    </div>
+    <div class="next-row"><button class="btn nx" data-gate="ph" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card text">
+    <span class="tag read">📖 Read</span>
+    <p><b>pH</b> tells you how acidic or alkaline something is. pH 2 is very acidic. pH 7 is neutral. Above 7 is alkaline.</p>
+    <p class="big">Every enzyme has an optimum pH. The wrong pH changes the enzyme's shape, so the substrate no longer fits.</p>
+    <p>Amylase from your saliva works well in your mouth at about pH 7. When the food reaches the acid in your stomach, amylase stops working. Pepsin is different. It is a stomach enzyme, so it works best in strong acid.</p>
+    <div class="next-row"><button class="btn nx">Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag quiz">✅ Quick check</span>
+    <div data-quiz="s5b"></div>
+    <div class="next-row"><button class="btn nx" data-gate="quiz-s5b" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag think">✍️ Explain it</span>
+    <div data-explain="s5"></div>
+    <div class="navrow"><span></span><button class="btn" onclick="go(6)">Next: The sidekick ▸</button></div>
+  </div>
+</section>
+
+<!-- ============ 6 COFACTORS ============ -->
+<section class="sec" id="s6" data-title="The sidekick">
+  <div class="sec-head"><div class="kicker">Part 6</div><h2>The sidekick</h2></div>
+
+  <div class="step card">
+    <span class="tag see">👀 Fix it</span>
+    <p class="big" style="margin:0 0 6px" id="cofTitle">Some wingmen cannot work alone. This one is missing his sidekick.</p>
+    <p style="margin:0 0 10px" id="cofDesc"></p>
+    <div class="stage" style="background:#FBF6EE;max-width:520px;margin:0 auto"><canvas id="cof" width="460" height="320"></canvas></div>
+    <div class="readout"><span class="pill" id="cofName" style="color:var(--grape)"></span><span class="pill" id="cofStat"></span><span class="pill">Reactions: <b id="cofCount">0</b></span></div>
+    <div class="tokens" id="cofTokens"></div>
+    <div class="say" id="cofSay"></div>
+    <div class="next-row"><button class="btn nx" data-gate="cof" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card text">
+    <span class="tag read">📖 Read</span>
+    <p class="big">Some enzymes need a non-protein helper before they can work. This helper is called a <span class="term" data-def="A non-protein helper that some enzymes need in order to work.">cofactor</span>.</p>
+    <p>Minerals such as <b>iron</b> and <b>zinc</b> can be cofactors. Many <b>vitamins</b> are turned into helpers called <span class="term" data-def="A cofactor made from a vitamin.">coenzymes</span>.</p>
+    <p>Your body cannot make these minerals, and it cannot make most vitamins. They have to come from your food. No cofactor means no working enzyme. This is one big reason a balanced diet matters.</p>
+    <div class="wing"><svg class="face" width="48" height="48"><use href="#wm"/></svg><p>Some wingmen only work when their partner is with them. The partner comes from what you eat.</p></div>
+    <div class="next-row"><button class="btn nx">Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag quiz">✅ Quick check</span>
+    <div data-quiz="s6"></div>
+    <div class="navrow"><span></span><button class="btn nx-sec" data-gate="quiz-s6" disabled onclick="go(7)">Next: Saboteurs ▸</button></div>
+  </div>
+</section>
+
+<!-- ============ 7 INHIBITORS ============ -->
+<section class="sec" id="s7" data-title="Saboteurs">
+  <div class="sec-head"><div class="kicker">Part 7</div><h2>Saboteurs</h2></div>
+
+  <div class="step card night">
+    <span class="tag see">👀 Experiment</span>
+    <p style="margin:0 0 8px;font-size:18px">The enzyme is working nicely. Now send in a saboteur and watch the speed. Try both.</p>
+    <div class="stage"><canvas id="inh" width="760" height="360"></canvas></div>
+    <div class="ctrls">
+      <div class="seg" id="inhMode"><button class="on" data-m="none">Normal</button><button data-m="comp">🎭 Fake key</button><button data-m="non">🤚 Arm-grabber</button></div>
+    </div>
+    <div class="readout"><span class="pill">Speed: <b id="inhRate">0</b> reactions per 10 s</span></div>
+    <div class="say" id="inhSay"></div>
+    <div class="next-row"><button class="btn nx" data-gate="inh" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card text">
+    <span class="tag read">📖 Read</span>
+    <p class="big">A substance that slows down or stops an enzyme is called an <span class="term" data-def="A substance that slows down or stops an enzyme.">inhibitor</span>.</p>
+    <p>🎭 The <b>fake key</b> has nearly the same shape as the substrate. It sits in the active site and blocks it, so the real substrate cannot get in. This is a <span class="term" data-def="An inhibitor that competes with the substrate for the active site.">competitive inhibitor</span>, because it competes with the substrate for the active site.</p>
+    <p>🤚 The <b>arm-grabber</b> does not go into the active site at all. It attaches somewhere else on the enzyme and bends it out of shape, so the active site no longer fits. This is a <span class="term" data-def="An inhibitor that attaches somewhere other than the active site and changes the enzyme's shape.">non-competitive inhibitor</span>.</p>
+    <div class="next-row"><button class="btn nx">Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag quiz">✅ Quick check</span>
+    <div data-quiz="s7a"></div>
+    <div class="next-row"><button class="btn nx" data-gate="quiz-s7a" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag see">👀 In real life: medicine</span>
+    <p class="big" style="margin:0 0 10px">Many medicines work by switching off an enzyme on purpose.</p>
+    <div class="grid3" style="grid-template-columns:repeat(2,1fr)">
+      <div class="mini"><div class="ic">💊</div><h3>Pain tablets</h3><p>Aspirin and ibuprofen block an enzyme your body uses to make the chemicals that cause pain and swelling. Enzyme blocked, less pain.</p></div>
+      <div class="mini"><div class="ic">🦠</div><h3>Antibiotics</h3><p>Penicillin blocks an enzyme that bacteria need to build their cell walls. Without a wall, the bacteria burst and die.</p></div>
+    </div>
+    <div class="next-row"><button class="btn nx">Continue</button></div>
+  </div>
+
+  <div class="step">
+    <div class="danger">
+      <span class="tag think" style="background:#5A1426;color:#FFB3C6">☠️ In real life: poison</span>
+      <h3>Bitter cassava</h3>
+      <p>Raw bitter cassava releases <b>cyanide</b> when it is grated or chewed. Cyanide shuts down an enzyme inside your cells that you need for <b>respiration</b>, the reaction that releases energy from glucose using oxygen.</p>
+      <p>Every cell in your body needs that energy all the time. With the enzyme switched off, cells cannot use oxygen to get energy, even while you are still breathing. Heart and brain cells are hit first. That is why cyanide poisoning is so fast and so dangerous.</p>
+      <div class="flow"><span>🥔 Grate</span><i>▸</i><span>💧 Squeeze out the juice</span><i>▸</i><span>🚿 Wash</span><i>▸</i><span>🔥 Cook well</span></div>
+      <p>This is why bitter cassava is grated, squeezed, washed and cooked before eating, and why the juice is boiled for a long time to make <b>cassareep</b>. Those old kitchen steps remove the poison. Our grandparents were doing real science.</p>
+      <p class="small" style="color:#FFB3C6">Note: cyanide works differently from the fake key and the arm-grabber you just saw. It is another example of a poison that shuts an enzyme down.</p>
+    </div>
+    <div class="next-row"><button class="btn nx">Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag quiz">✅ Quick check</span>
+    <div data-quiz="s7b"></div>
+    <div class="next-row"><button class="btn nx" data-gate="quiz-s7b" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag think">✍️ Explain it</span>
+    <div data-explain="s7"></div>
+    <div class="navrow"><span></span><button class="btn" onclick="go(8)">Next: Lights out ▸</button></div>
+  </div>
+</section>
+
+<!-- ============ 8 LIGHTS OUT ============ -->
+<section class="sec" id="s8" data-title="Lights out">
+  <div class="sec-head"><div class="kicker">Part 8</div><h2>Lights out</h2></div>
+
+  <div class="step card">
+    <span class="tag see">👀 Imagine</span>
+    <p class="big" style="margin:0 0 10px">What if every enzyme in your body switched off at once?</p>
+    <div class="bodymap" id="bm8">
+      <div class="bmsvg"></div>
+      <div class="panel" id="bm8panel"><div class="ph">Press the switch below.</div></div>
+    </div>
+    <div class="ctrls"><button class="btn mango" id="lightsBtn">🔌 Switch all enzymes OFF</button></div>
+    <div class="next-row"><button class="btn nx" data-gate="lights" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag read">📖 The wingman's rules</span>
+    <p class="big" style="margin:0 0 12px">Ça y est! Everything you learned, in six lines.</p>
+    <div class="rules">
+      <div class="rule"><div class="n">1</div><p><b>Enzymes are biological catalysts.</b> They are proteins that speed up reactions by lowering the activation energy.</p></div>
+      <div class="rule"><div class="n">2</div><p><b>They are not used up.</b> One enzyme works again and again.</p></div>
+      <div class="rule"><div class="n">3</div><p><b>Shape is everything.</b> The substrate's shape must be complementary to the active site.</p></div>
+      <div class="rule"><div class="n">4</div><p><b>More collisions, faster reactions</b>, until every active site is busy.</p></div>
+      <div class="rule"><div class="n">5</div><p><b>Heat and wrong pH change the shape.</b> The enzyme becomes denatured.</p></div>
+      <div class="rule"><div class="n">6</div><p><b>Some need a cofactor from food. Inhibitors switch them off.</b> That links enzymes to nutrition, medicine and poison.</p></div>
+    </div>
+    <div class="next-row"><button class="btn nx">Final challenge ▸</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag quiz">🏆 Final challenge</span>
+    <p style="margin:0 0 12px">These questions use situations you have not seen yet. Use what you learned to work them out.</p>
+    <div data-quiz="s8"></div>
+    <div class="next-row"><button class="btn nx" data-gate="quiz-s8" disabled>Continue</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag think">✍️ Last one: explain it</span>
+    <div data-explain="s8"></div>
+    <div class="next-row"><button class="btn nx">See my results ▸</button></div>
+  </div>
+
+  <div class="step card">
+    <span class="tag read">🎉 Your results</span>
+    <div class="result-big" id="resBig">–</div>
+    <p style="text-align:center;margin:0" id="resLine"></p>
+    <div id="resList" style="margin-top:14px"></div>
+    <p style="margin:16px 0 6px;font-weight:800">Check your name and class:</p>
+    <input class="name" id="sendName" placeholder="First and last name">
+    <select class="name" id="sendClass" style="margin-top:8px"></select>
+    <div class="ebtns"><button class="btn mango" id="sendBtn">📨 Send my points to Mr. Legall</button></div>
+    <p class="small" id="sendStatus"></p>
+    <p class="small" id="notConn">This page is not connected to the class form yet, so use Copy my results.</p>
+    <div class="ebtns"><a class="btn sm alt" id="formLink" href="#" target="_blank" rel="noopener" style="display:none">If sending fails, open the form here</a><button class="btn sm alt" id="copyRes">📋 Copy my results</button></div>
+    <p style="margin:18px 0 6px;font-weight:800">Points still waiting for you:</p>
+    <div id="goBackList" class="goBack"></div>
+  </div>
+</section>
+
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== drawing helpers: one shape language for the whole explainer ===== */
+const COL={enz:'#6C4AB6',enzDark:'#4A2F86',sub:'#5BC236',subDark:'#3A8E1E',pR:'#2E9C9C',pV:'#FF6A2B',imp:'#E8406E',gold:'#FFC93C',ink:'#211A33'};
+const TAU=Math.PI*2;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+function rnd(a,b){return a+Math.random()*(b-a)}
+
+function cv(id){
+  const c=document.getElementById(id); if(!c) return null;
+  const W=c.width,H=c.height,d=Math.min(2,window.devicePixelRatio||1);
+  c.width=W*d;c.height=H*d;c._d=d;
+  const ctx=c.getContext('2d');ctx.setTransform(d,0,0,d,0,0);
+  return {c,ctx,W,H,d};
+}
+function ptr(e,o){const r=o.c.getBoundingClientRect();return {x:(e.clientX-r.left)*o.W/r.width,y:(e.clientY-r.top)*o.H/r.height}}
+function clear(o){o.ctx.clearRect(0,0,o.W,o.H)}
+
+/* geometry of the active site for an enzyme of radius R, distortion k (0 = perfect, 1 = wrecked)
+   the body is a wide bean (ellipse) so the character reads as a friendly blob */
+function siteGeom(R,k=0){
+  const rx=1.1*R,ry=0.9*R;
+  const hw=0.5*R*(1-0.22*k);
+  const yTop=-ry*Math.sqrt(1-Math.pow(hw/rx,2));
+  return {rx,ry,hw,yTop,d:0.42*R*(1-0.65*k),vx:hw/2+k*hw*0.55,sy:1-0.65*k,skew:k*0.35*R};
+}
+/* enzyme outline path, centred at origin, active site facing -y, lips rounded */
+function enzymePath(ctx,R,k=0,wob=0,t=0){
+  const g=siteGeom(R,k);
+  const c1=Math.sqrt(1-Math.pow(g.hw/g.rx,2));
+  const a1=Math.atan2(-c1,g.hw/g.rx), a0=Math.atan2(-c1,-g.hw/g.rx)+TAU, dl=0.16;
+  const pt=a=>{const dTop=Math.min(Math.abs(a+Math.PI/2),Math.abs(a-1.5*Math.PI));const f=clamp((dTop-0.6)/0.9,0,1);
+    const m=1+wob*f*(0.07*Math.sin(3*a+t*2.1)+0.05*Math.sin(5*a-t*3.3)+0.04*Math.sin(7*a+t*5));return [g.rx*m*Math.cos(a),g.ry*m*Math.sin(a)];};
+  ctx.beginPath();
+  const N=64;const st=pt(a1+dl);ctx.moveTo(st[0],st[1]);
+  for(let i=1;i<=N;i++){const p=pt(a1+dl+(a0-dl-a1-dl)*i/N);ctx.lineTo(p[0],p[1]);}
+  const cx=-g.hw/2,r=g.hw/2,P0=Math.PI-0.45;
+  const rp=p=>[cx+r*Math.cos(p)+g.skew*0.3*Math.sin(p), g.yTop+r*g.sy*Math.sin(p)];
+  const s0=rp(P0);ctx.quadraticCurveTo(-g.hw,g.yTop,s0[0],s0[1]);
+  for(let i=1;i<=18;i++){const q=rp(P0-P0*i/18);ctx.lineTo(q[0],q[1]);}
+  ctx.lineTo(g.vx,g.yTop+g.d);
+  const e=[lerp(g.vx,g.hw,0.82),lerp(g.yTop+g.d,g.yTop,0.82)];ctx.lineTo(e[0],e[1]);
+  ctx.quadraticCurveTo(g.hw,g.yTop,st[0],st[1]);
+  ctx.closePath();
+}
+function enzymeSVGPath(R){let d='';const f=v=>v.toFixed(1);const rec={beginPath(){},closePath(){d+='Z';},moveTo(x,y){d+=`M${f(x)} ${f(y)}`;},lineTo(x,y){d+=`L${f(x)} ${f(y)}`;},quadraticCurveTo(a,b,x,y){d+=`Q${f(a)} ${f(b)} ${f(x)} ${f(y)}`;}};enzymePath(rec,R);return d;}
+/* full enzyme: o = {rot,k,wob,t,color,shades,glow,alpha,mood}  mood: 1 happy, 0 flat, -1 sad */
+function drawEnzyme(ctx,x,y,R,o={}){
+  ctx.save();ctx.translate(x,y);ctx.rotate(o.rot||0);ctx.globalAlpha=o.alpha==null?1:o.alpha;
+  if(o.glow){ctx.shadowColor=o.glowColor||COL.gold;ctx.shadowBlur=R*0.6*o.glow;}
+  enzymePath(ctx,R,o.k||0,o.wob||0,o.t||0);
+  ctx.fillStyle=o.color||COL.enz;ctx.fill();
+  ctx.shadowBlur=0;
+  if(o.outline!==false){ctx.lineWidth=Math.max(1.5,R*0.04);ctx.strokeStyle=o.stroke||COL.enzDark;ctx.stroke();}
+  if(o.face!==false&&R>14){
+    // keep the face upright-ish relative to the enzyme
+    const s=R/40;ctx.translate(0,R*0.16);
+    if(o.shades!==false){
+      ctx.fillStyle='#1b1230';
+      rr(ctx,-26*s,-6*s,22*s,13*s,5*s);rr(ctx,4*s,-6*s,22*s,13*s,5*s);
+      ctx.fillRect(-6*s,-3*s,12*s,3*s);
+      ctx.fillStyle='rgba(255,255,255,.55)';rr(ctx,-23*s,-4*s,7*s,3*s,1.5*s);rr(ctx,7*s,-4*s,7*s,3*s,1.5*s);
+    }else{
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(-11*s,0,5*s,0,TAU);ctx.arc(11*s,0,5*s,0,TAU);ctx.fill();
+      ctx.fillStyle='#1b1230';ctx.beginPath();ctx.arc(-11*s,1*s,2.5*s,0,TAU);ctx.arc(11*s,1*s,2.5*s,0,TAU);ctx.fill();
+    }
+    const m=o.mood==null?1:o.mood;
+    ctx.strokeStyle='#fff';ctx.lineWidth=4*s;ctx.lineCap='round';ctx.beginPath();
+    ctx.moveTo(-12*s,18*s);ctx.quadraticCurveTo(0,(18+9*m)*s,12*s,18*s);ctx.stroke();
+  }
+  ctx.restore();
+}
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();ctx.fill();}
+
+/* substrate pieces, drawn in the enzyme's local frame (so offset 0 = sitting in the active site)
+   variant: 'RV' correct, 'RR', 'VV', 'IMP' (impostor); part: 'both' | 'R' | 'V' */
+function subLocal(ctx,R,o={}){
+  const g=siteGeom(R,0),gap=R*0.03;
+  const v=o.variant||'RV',part=o.part||'both';
+  const capH=R*0.17, capL=-g.hw-R*0.06, capR=g.hw+R*0.06;
+  const cL=o.colorL||o.color||COL.sub, cR=o.colorR||o.color||COL.sub;
+  const fillP=(c,fn)=>{ctx.beginPath();fn();ctx.fillStyle=c;ctx.fill();};
+  const shapeR=(cx,w)=>()=>{ctx.moveTo(cx-w/2+gap,g.yTop-0.5);ctx.arc(cx,g.yTop-0.5,w/2-gap,Math.PI,0,true);ctx.closePath();};
+  const shapeV=(x0,x1,depth)=>()=>{ctx.moveTo(x0+gap,g.yTop-0.5);ctx.lineTo((x0+x1)/2,g.yTop+depth);ctx.lineTo(x1-gap,g.yTop-0.5);ctx.closePath();};
+  const shapeT=()=>{ctx.moveTo(gap,g.yTop-0.5);ctx.lineTo(g.hw*0.22,g.yTop+g.d*0.8);ctx.lineTo(g.hw*0.78,g.yTop+g.d*0.8);ctx.lineTo(g.hw-gap,g.yTop-0.5);ctx.closePath();};
+  const leftB=(v==='IMP'||v[0]==='R')?shapeR(-g.hw/2,g.hw):shapeV(-g.hw,0,g.d*0.92);
+  const rightB=v==='IMP'?shapeT:(v[1]==='R'?shapeR(g.hw/2,g.hw):shapeV(0,g.hw,g.d*0.92));
+  if(part==='both'){
+    fillP(cL,()=>{ctx.rect(capL,g.yTop-capH,-capL+0.6,capH);});
+    fillP(cR,()=>{ctx.rect(0,g.yTop-capH,capR,capH);});
+    fillP(cL,leftB);fillP(cR,rightB);
+  }else if(part==='R'){
+    fillP(cL,()=>{ctx.rect(capL,g.yTop-capH,-capL-gap,capH);});fillP(cL,leftB);
+  }else{
+    fillP(cR,()=>{ctx.rect(gap,g.yTop-capH,capR-gap,capH);});fillP(cR,rightB);
+  }
+  if(o.eyes){
+    const ey=g.yTop-capH*0.5,s=R/40;
+    const xs=part==='both'?[-6*s,6*s]:part==='R'?[-g.hw/2-4*s,-g.hw/2+4*s]:[g.hw/2-4*s,g.hw/2+4*s];
+    ctx.fillStyle='#fff';xs.forEach(xx=>{ctx.beginPath();ctx.arc(xx,ey,2.8*s,0,TAU);ctx.fill();});
+    ctx.fillStyle='#111';xs.forEach(xx=>{ctx.beginPath();ctx.arc(xx,ey+0.4*s,1.4*s,0,TAU);ctx.fill();});
+    if(o.frown){ctx.strokeStyle='#111';ctx.lineWidth=1.5*s;ctx.beginPath();ctx.moveTo(xs[0]-3*s,ey-4*s);ctx.lineTo(xs[0]+2*s,ey-2.5*s);ctx.moveTo(xs[1]+3*s,ey-4*s);ctx.lineTo(xs[1]-2*s,ey-2.5*s);ctx.stroke();}
+  }
+}
+/* the visual centre of a substrate relative to the enzyme centre (local frame) */
+function subCentre(R,part='both'){const g=siteGeom(R);const y=g.yTop-R*0.02;return part==='R'?{x:-g.hw/2,y}:part==='V'?{x:g.hw/2,y}:{x:0,y}}
+/* draw a free-floating piece centred at (x,y) */
+function drawSub(ctx,x,y,R,o={}){
+  const c=subCentre(R,o.part);
+  ctx.save();ctx.translate(x,y);ctx.rotate(o.rot||0);ctx.globalAlpha=o.alpha==null?1:o.alpha;ctx.translate(-c.x,-c.y);
+  subLocal(ctx,R,o);ctx.restore();
+}
+/* world position of the active site for an enzyme at (x,y) with rotation rot */
+function sitePos(x,y,R,rot){const yy=siteGeom(R).yTop-R*0.02;return {x:x-yy*Math.sin(rot),y:y+yy*Math.cos(rot)}}
+
+/* little molecules for the body map */
+function hex(ctx,x,y,r,c){ctx.beginPath();for(let i=0;i<6;i++){const a=i*TAU/6+Math.PI/6;ctx.lineTo(x+r*Math.cos(a),y+r*Math.sin(a));}ctx.closePath();ctx.fillStyle=c;ctx.fill();ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=1.5;ctx.stroke();}
+function pent(ctx,x,y,r,c){ctx.beginPath();for(let i=0;i<5;i++){const a=i*TAU/5-Math.PI/2;ctx.lineTo(x+r*Math.cos(a),y+r*Math.sin(a));}ctx.closePath();ctx.fillStyle=c;ctx.fill();ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=1.5;ctx.stroke();}
+function ball(ctx,x,y,r,c){ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fillStyle=c;ctx.fill();ctx.strokeStyle='rgba(0,0,0,.2)';ctx.lineWidth=1.2;ctx.stroke();}
+function bond(ctx,x1,y1,x2,y2){ctx.strokeStyle='#8a7f99';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
+function label(ctx,txt,x,y,o={}){const cc=ctx.canvas;let fk=1;if(cc&&cc.clientWidth){fk=clamp(cc.width/(cc._d||1)/cc.clientWidth*0.72,1,1.8);}o=Object.assign({},o,{size:Math.round((o.size||15)*fk)});ctx.save();ctx.font=`${o.w||800} ${o.size||15}px Nunito,Segoe UI,sans-serif`;ctx.textAlign=o.align||'center';ctx.textBaseline=o.base||'middle';ctx.fillStyle=o.color||COL.ink;if(o.bg){const m=ctx.measureText(txt);const w=m.width+12,h=(o.size||15)+8;let bx=o.align==='left'?x-6:o.align==='right'?x-w+6:x-w/2;ctx.fillStyle=o.bg;rr(ctx,bx,y-h/2,w,h,8);ctx.fillStyle=o.color||COL.ink;}ctx.fillText(txt,x,y);ctx.restore();}
+function arrow(ctx,x1,y1,x2,y2,c='#5E5672',w=2.5){ctx.save();ctx.strokeStyle=c;ctx.fillStyle=c;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();const a=Math.atan2(y2-y1,x2-x1),h=9;ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-h*Math.cos(a-0.45),y2-h*Math.sin(a-0.45));ctx.lineTo(x2-h*Math.cos(a+0.45),y2-h*Math.sin(a+0.45));ctx.closePath();ctx.fill();ctx.restore();}
+
+/* night fete backdrop */
+function feteBg(o,t){
+  const {ctx,W,H}=o;
+  const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#1a0f33');g.addColorStop(1,'#3a2566');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=1;ctx.beginPath();
+  for(let x=0;x<=W;x+=6){const y=18+10*Math.sin(x/W*Math.PI);x?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.stroke();
+  const cols=['#FFC93C','#E8406E','#22A863','#1E8FD0','#FF8A1F'];
+  for(let i=0,x=12;x<W;x+=28,i++){const y=18+10*Math.sin(x/W*Math.PI)+4;const on=0.55+0.45*Math.sin(t*3+i*1.7);ctx.globalAlpha=on;ball(ctx,x,y,4,cols[i%5]);}
+  ctx.globalAlpha=1;
+}
+
+/* ============================================================
+   TEACHER SETTINGS  (the only part you ever need to edit)
+   ============================================================ */
+
+/* 1. The classes students can choose from. Add, remove or rename. */
+var CLASSES=["4A","4B","4C","5A","5B","5C","Adult lessons","Other"];
+
+/* 2. Your Google Form. Run setupWingmenForm in Apps Script, then paste the
+      settings it prints in place of the next line. Until then the page still
+      works: students just copy their results instead of sending them. */
+var FORM={action:"",entries:{}};
+
+/* 3. Change this if you change the page, so you can tell versions apart. */
+var PAGE_VERSION="v1";
+/* ============================================================ */
+
+/* ===== core: navigation, steps, gates, quizzes, explain boxes, saving ===== */
+const KEY='enzymes-wingman-v1';
+let S={sec:0,steps:{},gates:{},quiz:{},pred:{},ex:{},done:{}};
+try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}if(typeof updateScore==='function'&&window.__ready)updateScore();}
+
+const secs=[...document.querySelectorAll('.sec')];
+const dotsEl=document.getElementById('dots');
+secs.forEach((s,i)=>{const b=document.createElement('button');b.className='dot';b.textContent=i?i:'⌂';b.title=s.dataset.title;b.setAttribute('aria-label',s.dataset.title);b.onclick=()=>jump(i);dotsEl.appendChild(b);});
+
+function toast(msg,ms){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('on'),ms||2600);}
+
+function refreshDots(){[...dotsEl.children].forEach((d,i)=>{d.classList.toggle('cur',i===S.sec);const p=(typeof partPct==='function'&&window.__ready)?partPct(i):0;d.classList.toggle('done',p>=99.9);d.style.setProperty('--p',p+'%');});}
+
+function stepsOf(i){return [...secs[i].querySelectorAll(':scope > .step')];}
+function showSteps(i){
+  const st=stepsOf(i);if(!st.length)return;
+  const n=Math.min(S.steps[i]||0,st.length-1);
+  st.forEach((s,k)=>{s.classList.toggle('on',k<=n);const nr=s.querySelector(':scope > .next-row');if(nr)nr.style.display=k<n?'none':'';});
+  if(n===st.length-1){S.done[i]=true;}
+}
+function go(i){
+  S.sec=i;secs.forEach((s,k)=>s.classList.toggle('on',k===i));
+  showSteps(i);refreshDots();save();window.scrollTo(0,0);
+  hideTip();onEnter(i);
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.nx');if(!b||b.disabled)return;
+  const step=b.closest('.step');const sec=step.closest('.sec');const i=secs.indexOf(sec);
+  const st=stepsOf(i);const k=st.indexOf(step);
+  S.steps[i]=Math.max(S.steps[i]||0,k+1);showSteps(i);refreshDots();save();
+  const nxt=st[k+1];if(nxt){setTimeout(()=>{const y=nxt.getBoundingClientRect().top+window.scrollY-74;window.scrollTo({top:y,behavior:'smooth'});},60);onStep(i,k+1);}
+});
+function unlock(name,quiet){
+  if(!S.gates[name]){S.gates[name]=true;save();}
+  document.querySelectorAll(`[data-gate="${name}"]`).forEach(b=>{if(b.disabled){b.disabled=false;if(!quiet){b.animate([{transform:'scale(1)'},{transform:'scale(1.08)'},{transform:'scale(1)'}],{duration:500,iterations:2});}}});
+}
+Object.keys(S.gates).forEach(g=>unlock(g,true));
+
+/* ---- glossary tips ---- */
+let tipEl=null;
+function hideTip(){if(tipEl){tipEl.remove();tipEl=null;}}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('.term');hideTip();if(!t)return;
+  tipEl=document.createElement('div');tipEl.className='tip';tipEl.textContent=t.dataset.def;document.body.appendChild(tipEl);
+  const r=t.getBoundingClientRect();const w=tipEl.offsetWidth;
+  tipEl.style.left=Math.max(8,Math.min(window.innerWidth-w-8,r.left+r.width/2-w/2))+'px';
+  tipEl.style.top=(r.bottom+window.scrollY+6)+'px';
+});
+window.addEventListener('scroll',()=>{if(tipEl&&!tipEl._s){tipEl._s=1;}},{passive:true});
+
+/* ---- seeded shuffle so options stay put on reload ---- */
+function hashStr(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;}
+function seeded(seed){return()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;}}
+function shuffled(arr,key){const r=seeded(hashStr(key));const a=arr.map((v,i)=>[v,i]);for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* ---- multiple-choice quizzes ---- */
+function renderQuiz(el,key,qs){
+  el.innerHTML='';
+  qs.forEach((q,qi)=>{
+    const id=key+'-'+qi;const rec=S.quiz[id]||(S.quiz[id]={first:null,done:false,sec:key});
+    const box=document.createElement('div');box.className='q';
+    box.innerHTML=`<div class="qtext">${qs.length>1?(qi+1)+'. ':''}${q.q}</div><div class="opts"></div><div class="fb"></div>`;
+    const opts=box.querySelector('.opts'),fb=box.querySelector('.fb');
+    const order=q.noShuffle?q.opts.map((v,i)=>[v,i]):shuffled(q.opts,id);
+    order.forEach(([txt,oi],pos)=>{
+      const b=document.createElement('button');b.className='opt';b.innerHTML=`<span class="l">${'ABCD'[pos]}</span><span>${txt}</span>`;
+      b.onclick=()=>{
+        if(rec.done)return;
+        if(oi===q.a){
+          b.classList.add('right');rec.done=true;if(rec.first===null)rec.first=true;
+          opts.querySelectorAll('.opt').forEach(x=>x.classList.add('locked'));
+          fb.className='fb on good';fb.innerHTML='✅ '+(q.why||'Correct!');
+          save();checkQuizDone(key,qs.length,el);
+        }else{
+          b.classList.add('wrong','locked');if(rec.first===null)rec.first=false;
+          fb.className='fb on try';fb.innerHTML='🤔 '+((q.fb&&q.fb[oi])||'Not quite. Look again and try another answer.');
+          save();
+        }
+      };
+      if(rec.done&&oi===q.a){b.classList.add('right');}
+      opts.appendChild(b);
+    });
+    if(rec.done){opts.querySelectorAll('.opt').forEach(x=>x.classList.add('locked'));fb.className='fb on good';fb.innerHTML='✅ '+(q.why||'Correct!');}
+    el.appendChild(box);
+  });
+  const sc=document.createElement('div');sc.className='qscore';el.appendChild(sc);
+  checkQuizDone(key,qs.length,el,true);
+}
+function checkQuizDone(key,n,el,quiet){
+  let done=0,first=0;for(let i=0;i<n;i++){const r=S.quiz[key+'-'+i];if(r&&r.done){done++;if(r.first)first++;}}
+  if(done===n){el.querySelector('.qscore').textContent=`You got ${first} of ${n} right on the first try.`;unlock('quiz-'+key,quiet);}
+}
+
+/* ---- sorting quiz ---- */
+function renderSort(el,key,items,labels){
+  el.className='sort';el.innerHTML='';
+  items.forEach((it,i)=>{
+    const id=key+'-'+i;const rec=S.quiz[id]||(S.quiz[id]={first:null,done:false,sec:key});
+    const row=document.createElement('div');row.className='sitem';
+    row.innerHTML=`<div class="st">${it.t}</div><div class="sb"></div>`;
+    const sb=row.querySelector('.sb');
+    const finish=()=>{row.classList.add('right');sb.innerHTML=`<span class="btag ${it.a?'bld':'brk'}">${labels[it.a]}</span>`;};
+    if(rec.done)finish();else labels.forEach((lab,li)=>{
+      const b=document.createElement('button');b.textContent=lab;
+      b.onclick=()=>{
+        if(li===it.a){rec.done=true;if(rec.first===null)rec.first=true;finish();save();chk();}
+        else{if(rec.first===null)rec.first=false;row.classList.remove('wrongtry');void row.offsetWidth;row.classList.add('wrongtry');toast(it.hint||'Not quite. Is it cutting something up, or adding on?');save();}
+      };sb.appendChild(b);
+    });
+    el.appendChild(row);
+  });
+  const sc=document.createElement('div');sc.className='qscore';el.appendChild(sc);
+  const chk=(q)=>{let d=0,f=0;items.forEach((_,i)=>{const r=S.quiz[key+'-'+i];if(r.done){d++;if(r.first)f++;}});if(d===items.length){sc.textContent=`You got ${f} of ${items.length} right on the first try.`;unlock('sort-'+key,q);}};
+  chk(true);
+}
+
+/* ---- predictions ---- */
+const predictHooks={};
+function renderPredict(el,key,p){
+  el.innerHTML='<div class="opts"></div><div class="fb"></div>';
+  const opts=el.querySelector('.opts'),fb=el.querySelector('.fb');
+  p.opts.forEach((txt,i)=>{
+    const b=document.createElement('button');b.className='opt';b.innerHTML=`<span class="l">${'ABCD'[i]}</span><span>${txt}</span>`;
+    b.onclick=()=>{if(S.pred[key]!=null)return;S.pred[key]=i;save();mark();if(predictHooks[key])predictHooks[key](i);unlock('pred-'+key);};
+    opts.appendChild(b);
+  });
+  const mark=()=>{const i=S.pred[key];if(i==null)return;[...opts.children].forEach((b,k)=>{b.classList.add('locked');if(k===i){b.style.borderColor='#C9A400';b.style.background='#FFF6CF';}});fb.className='fb on neutral';fb.textContent=p.after||'Locked in! Now let\'s test it.';};
+  mark();
+}
+function predLine(key,p){
+  const i=S.pred[key];if(i==null)return'';
+  return i===p.a?`You predicted: “${p.opts[i]}” You were right! 🎉`:`You predicted: “${p.opts[i]}” The experiment showed something different. That is fine. That is what experiments are for.`;
+}
+
+/* ---- explain-it boxes ---- */
+function renderExplain(el,key,x){
+  const rec=S.ex[key]||(S.ex[key]={text:'',ticks:null});
+  el.className='explain';
+  el.innerHTML=`<p class="qtext">${x.q}</p><p class="small" style="margin:-4px 0 8px">Write one or two full sentences. Use the science words you learned.</p>
+  <textarea placeholder="Type your answer here…"></textarea>
+  <div class="ebtns"><button class="btn sm chk">🔍 Check my key ideas</button></div>
+  <div class="eres"><div style="font-weight:800" class="etot"></div><ul class="pts"></ul>
+  <p class="small">This checker only looks for key words. If you made an idea in your own words, tick it yourself. Then compare with the model answer.</p>
+  <div class="model"><b>Model answer:</b> ${x.model}</div>
+  <div class="ebtns"><a class="btn mango sm ask" href="https://claude.ai/new" target="_blank" rel="noopener" style="text-decoration:none">💬 Get feedback from Claude</a></div>
+  <p class="small">This copies your answer and the mark scheme, then opens Claude. If the box in Claude is empty, paste (Ctrl+V, or long-press and Paste on a phone).</p></div>`;
+  const ta=el.querySelector('textarea'),res=el.querySelector('.eres'),ul=el.querySelector('.pts'),tot=el.querySelector('.etot');
+  ta.value=rec.text||'';
+  ta.addEventListener('input',()=>{rec.text=ta.value;save();});
+  const draw=()=>{
+    ul.innerHTML='';
+    x.points.forEach((p,i)=>{const li=document.createElement('li');li.className=rec.ticks[i]?'hit':'';li.innerHTML=`<span class="bx" role="checkbox" aria-checked="${!!rec.ticks[i]}" tabindex="0">${rec.ticks[i]?'✓':''}</span><span>${p.label}</span>`;
+      li.querySelector('.bx').onclick=()=>{rec.ticks[i]=!rec.ticks[i];save();draw();};ul.appendChild(li);});
+    const n=rec.ticks.filter(Boolean).length;tot.textContent=`${n} of ${x.points.length} key ideas ${n===x.points.length?'🌟 Full marks!':''}`;
+  };
+  el.querySelector('.chk').onclick=()=>{
+    const t=ta.value.trim();
+    if(t.split(/\s+/).filter(Boolean).length<5){toast('Write a bit more first: at least one full sentence.');return;}
+    const low=t.toLowerCase();
+    rec.ticks=x.points.map(p=>p.re.some(r=>r.test(low)));rec.text=t;save();
+    res.classList.add('on');draw();
+  };
+  el.querySelector('.ask').onclick=function(){
+    const prompt=`You are giving feedback to a Form 4 student (age about 14–15) in Trinidad and Tobago on a CSEC Human and Social Biology short answer about enzymes.
+
+Question: ${x.q}
+
+Mark scheme (one mark per key idea):
+${x.points.map((p,i)=>`${i+1}. ${p.label}`).join('\n')}
+
+Model answer: ${x.model}
+
+Student's answer: "${ta.value.trim()}"
+
+Please:
+1. Say which mark scheme points the student earned, and give a score out of ${x.points.length}. Accept correct science in the student's own words.
+2. Point out any science that is wrong or unclear.
+3. Give one specific tip to improve the answer, but do NOT rewrite the whole answer for them. Let them try again.
+Use simple, friendly, encouraging language and short sentences.`;
+    this.href='https://claude.ai/new?q='+encodeURIComponent(prompt);
+    copyText(prompt).then(ok=>toast(ok?'Copied! Opening Claude…':'Opening Claude…'));
+  };
+  if(rec.ticks){res.classList.add('on');draw();}
+}
+function copyText(t){
+  if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(t).then(()=>true,()=>fallback());
+  return Promise.resolve(fallback());
+  function fallback(){try{const a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();const ok=document.execCommand('copy');a.remove();return ok;}catch(e){return false;}}
+}
+
+/* ---- animation loop: only the sims that are on screen run ---- */
+const sims=[];
+function sim(sec,canvasId,obj){obj.sec=sec;obj.el=document.getElementById(canvasId);sims.push(obj);return obj;}
+let last=performance.now();
+function loop(now){
+  const dt=Math.min(0.05,(now-last)/1000);last=now;
+  if(!document.hidden){for(const s of sims){if(s.sec!==S.sec||!s.el)continue;const st=s.el.closest('.step');if(st&&!st.classList.contains('on'))continue;try{s.tick(dt,now/1000);}catch(err){console.error(err);s.el=null;}}}
+  requestAnimationFrame(loop);
+}
+const enterHooks={},stepHooks={};
+function onEnter(i){(enterHooks[i]||[]).forEach(f=>f());}
+function onStep(i,k){(stepHooks[i+':'+k]||[]).forEach(f=>f());}
+
+/* ===== questions, predictions, explain-it mark schemes ===== */
+const SORT_S1=[
+  {t:'Amylase turning starch into sugar in your mouth',a:0},
+  {t:'Joining amino acids together to build muscle protein',a:1},
+  {t:'Catalase turning hydrogen peroxide into water and oxygen',a:0},
+  {t:'Your liver joining many glucose molecules together to store them as glycogen',a:1},
+  {t:'Splitting fats into smaller molecules in your small intestine',a:0},
+  {t:'Pepsin cutting long protein chains into shorter pieces in the stomach',a:0},
+  {t:'Your body joining fatty acids and glycerol together to make fat for storage',a:1},
+];
+
+const QUIZ={
+s2:[
+ {q:"After the wingman helps one pair, what happens to him?",opts:["He stays with the pair until they separate","He is free to help another pair","He becomes part of the couple","He gets tired and has to rest before the next pair"],a:1,
+  why:"Enzymes are not used up. After each reaction, the same enzyme is free to work again.",
+  fb:["No. The enzyme lets go of the products straight away.",null,"No. The enzyme does not become part of the product.","Enzymes do not wear out like people. In the fete, the same wingmen kept working pair after pair."]},
+ {q:"How does an enzyme make a reaction happen faster?",opts:["It raises the temperature needed to start the reaction","It lowers the activation energy","It gives the products extra stored energy","It gets burned up to push the reaction over the hill"],a:1,
+  why:"Enzymes lower the activation energy. The hill gets smaller, so the reaction happens more easily.",
+  fb:["No. The enzyme makes the hill smaller. It does not make it harder to start.",null,"No. The start and the finish stay the same. Only the path changes.","No. Enzymes are not used up. They push the ball over a smaller hill and are free to go again."]},
+ {q:"Enzymes are made of…",opts:["Carbohydrates (starch and sugars)","Lipids (fats and oils)","Proteins","Minerals"],a:2,
+  why:"Enzymes are proteins folded into special shapes. Remember this. It matters a lot in Part 5.",
+  fb:["No. Starch and sugars are carbohydrates. Some of them are substrates that enzymes work on.","No. Fats and oils are lipids. They are substrates for the enzyme lipase.",null,"Minerals such as iron can be helpers for enzymes, but they are not what the enzyme itself is made of."]},
+],
+s3:[
+ {q:"Lactose is the sugar in milk. What would you expect the enzyme that digests lactose to be called?",opts:["Lactase","Lactose","Amylase","Lipase"],a:0,
+  why:"Lact + ase. The “-ase” ending tells you it is an enzyme, and “lact-” tells you the substrate is lactose.",
+  fb:[null,"Careful! Lactose is the sugar (the substrate), not the enzyme. Enzyme names end in -ase.","Amylase works on starch. Check the first part of the name.","Lipase works on fats and oils (lipids). Check the first part of the name."]},
+ {q:"Why can amylase digest starch but not fat?",opts:["Fat is too big for any enzyme to digest","The shape of a fat molecule is not complementary to amylase's active site","Amylase would need a higher temperature to work on fat","Amylase is used up before it can reach the fat"],a:1,
+  why:"Each enzyme only fits substrates with a complementary shape. Fat needs a different enzyme: lipase.",
+  fb:["Not quite. Another enzyme, lipase, digests fat very well. The problem is the fit with amylase.",null,"Temperature is not the problem here. Think lock and key.","Enzymes are not used up. Think lock and key."]},
+ {q:"In the lock and key model, what is the “lock”?",opts:["The substrate","The products","The active site of the enzyme","The enzyme–substrate complex"],a:2,
+  why:"The active site is the lock. The substrate is the key that fits it.",
+  fb:["The substrate is the key.","The products are what leave after the reaction.",null,"The complex is the lock and the key together, after the substrate has fitted in."]},
+],
+s4:[
+ {q:"On the graph, the line goes flat when there is a lot of substrate. Why?",opts:["The enzymes have been used up","All the active sites are busy","The substrate has run out","The enzymes have changed shape"],a:1,
+  why:"Every active site is already busy, so extra substrate has to wait. The enzymes are working at top speed.",
+  fb:["Careful! Enzymes are never used up.",null,"No. There is lots of substrate at that end of the graph.","No. Nothing changed the temperature or pH here, so the enzymes kept their shape."]},
+ {q:"The reaction has levelled off. Which change would make it go faster?",opts:["Add more substrate","Add more enzyme","Wait longer","Cool the mixture to 10 °C"],a:1,
+  why:"More enzyme means more active sites, so the top speed goes up.",
+  fb:["No. The active sites are all busy already, so more substrate will just wait.",null,"Waiting does not change the speed of the reaction.","Cooling slows the molecules down, so the reaction gets slower, not faster."]},
+ {q:"True or false: Adding more substrate always makes an enzyme reaction slower.",opts:["True","False"],a:1,noShuffle:true,
+  why:"False. More substrate speeds the reaction up at first. Then the speed levels off. It does not get slower.",
+  fb:["Look at the graph again. The line goes up and then levels off. It never goes down.",null]},
+],
+s5a:[
+ {q:"An enzyme is not alive. So why do we say it is “denatured” and not “killed”?",opts:["Because cooling it down always brings its shape back","Because it was never alive. Heat changes its shape, so it stops working","Because heat only slows it down without changing its shape","Because denatured means the enzyme has been used up"],a:1,
+  why:"You cannot kill something that was never alive. An enzyme is a protein. Heat changes its shape, so the active site no longer fits.",
+  fb:["No. Once the shape is badly changed, cooling does not fix it, like a fried egg.",null,"Too much heat does more than slow it down. It changes the shape.","Enzymes are never used up. Denatured means the shape has changed."]},
+ {q:"At which temperature would most enzymes in your body work fastest?",opts:["25 °C","37 °C","45 °C","60 °C"],a:1,noShuffle:true,
+  why:"About 37 °C, your body temperature, is the optimum for most human enzymes.",
+  fb:["They would work, but more slowly. 25 °C is cooler than body temperature.",null,"Too warm. Human enzymes start to lose their shape above the optimum.","Far too hot. Most human enzymes would be denatured here."]},
+ {q:"A very high fever, above 42 °C, is dangerous. Why?",opts:["Your own enzymes start to lose their shape","Your enzymes work so fast that they get used up","The activation energy becomes too high for any reaction to happen","Your body stops making the substrates your enzymes need"],a:0,
+  why:"At very high temperatures your own enzymes begin to denature. A mild fever helps fight germs. A very high fever starts to damage you.",
+  fb:[null,"Enzymes are not used up. Think about what high heat does to a protein.","Enzymes lower the activation energy, and heat does not raise it. The problem is the shape of the enzymes.","The body keeps making substrates. The problem is the enzymes themselves."]},
+],
+s5b:[
+ {q:"Why does saliva amylase stop working when food reaches the stomach?",opts:["The stomach is hotter than the mouth and denatures amylase","The stomach acid changes amylase's shape","Amylase is used up in the mouth","There is no starch in the stomach"],a:1,
+  why:"The stomach is at about pH 2. That acid changes amylase's shape, so starch no longer fits.",
+  fb:["The stomach is about the same temperature as the mouth. Think about acid.",null,"Amylase is not used up. Think about what is different in the stomach.","Food in the stomach still contains starch. The enzyme stops because of the acid."]},
+ {q:"Pepsin works best at pH 2. Where in your body would you expect it to work?",opts:["Mouth","Small intestine","Blood","Stomach"],a:3,
+  why:"The stomach is strongly acidic, about pH 2. Pepsin is made to work there.",
+  fb:["The mouth is about pH 7, the home of amylase. Pepsin likes strong acid.","The small intestine is slightly alkaline, not strongly acidic.","Blood is close to neutral. It is not at pH 2.",null]},
+],
+s6:[
+ {q:"A cofactor is…",opts:["A non-protein helper that some enzymes need in order to work","A protein that an enzyme breaks down","A substance that competes with the substrate for the active site","A product released after an enzyme reaction"],a:0,
+  why:"A cofactor is a non-protein helper, like iron, zinc or a vitamin-based coenzyme.",
+  fb:[null,"No. That sounds like a substrate. A cofactor helps the enzyme.","No. That describes a competitive inhibitor.","No. Products are what the enzyme makes."]},
+ {q:"Kevin eats mostly chips and soft drinks, with hardly any whole grains, peas, eggs or fish. He often feels tired. Using what you learned, what is one possible reason?",opts:["His enzymes are used up faster because processed food is hard to digest","He may be short of B vitamins, which some energy-releasing enzymes need as helpers","The chips have denatured his enzymes","His body is making too many enzymes for the food he eats"],a:1,
+  why:"B vitamins become coenzymes for the enzymes that release energy from food. (Tiredness can have many causes. A doctor would check properly.)",
+  fb:["Enzymes are not used up, whatever the food.",null,"Food does not denature the enzymes inside your cells. Think about helpers.","The problem in this question is a missing helper, not too many enzymes."]},
+ {q:"Callaloo, red beans and liver are good sources of iron. Which enzyme from this part needs iron?",opts:["Catalase","Amylase","Pepsin","Lipase"],a:0,
+  why:"Catalase needs iron as its helper. It breaks down harmful hydrogen peroxide.",
+  fb:[null,"In this explainer, iron is the helper for catalase.","In this explainer, iron is the helper for catalase.","In this explainer, iron is the helper for catalase."]},
+],
+s7a:[
+ {q:"A molecule with nearly the same shape as the substrate sits in the active site and blocks it. What type of inhibitor is this?",opts:["Competitive inhibitor","Non-competitive inhibitor","A cofactor","An enzyme–substrate complex"],a:0,noShuffle:true,
+  why:"It competes with the substrate for the active site. That is a competitive inhibitor, our 🎭 fake key.",
+  fb:[null,"A non-competitive inhibitor attaches somewhere else. This one sits IN the active site.","A cofactor helps the enzyme work. It does not block it.","The complex is the enzyme with its real substrate. This molecule is blocking, not reacting."]},
+ {q:"A molecule attaches to the side of the enzyme and bends the active site out of shape. What type of inhibitor is this?",opts:["Competitive inhibitor","Non-competitive inhibitor","A cofactor","An enzyme–substrate complex"],a:1,noShuffle:true,
+  why:"It does not compete for the active site. It changes the enzyme's shape from somewhere else. That is a non-competitive inhibitor, our 🤚 arm-grabber.",
+  fb:["A competitive inhibitor sits IN the active site. This one is on the side.",null,"A cofactor helps the enzyme work. It does not bend it out of shape.","The complex is the enzyme with its real substrate. This molecule is bending the enzyme, not reacting."]},
+],
+s7b:[
+ {q:"Penicillin blocks an enzyme that bacteria use to build their cell walls. Why does it kill bacteria but not harm your cells?",opts:["Human cells destroy penicillin before it can work","Your cells do not have cell walls, so they do not need that enzyme","Human enzymes have a different optimum temperature from bacterial enzymes","Penicillin can only get into bacteria because they are smaller"],a:1,
+  why:"Human cells have no cell wall, so blocking the wall-building enzyme only hurts the bacteria.",
+  fb:["Penicillin does work inside the body. The question is why it does not harm your cells.",null,"Temperature is not the reason. Think about what the enzyme builds.","Size is not the reason. Think about what the enzyme builds."]},
+ {q:"Why does cyanide poisoning affect the whole body so quickly?",opts:["It stops the digestive system from breaking down food","It shuts down an enzyme that every cell needs to release energy","It raises body temperature until the enzymes denature","It stops oxygen from getting into the lungs"],a:1,
+  why:"Every cell needs respiration to release energy. Cyanide switches off a key respiration enzyme, so cells everywhere run out of energy.",
+  fb:["Cyanide harms every cell, not only digestion.",null,"Cyanide does not heat the body. It switches off one key enzyme.","You can still breathe. The oxygen reaches the cells, but the cells cannot use it."]},
+],
+s8:[
+ {q:"Green pawpaw (papaya) contains an enzyme called papain. People rub it on tough meat to make it tender. Papain is a protease. What is it breaking down in the meat?",opts:["Starch","Fat","Protein","Sugar"],a:2,
+  why:"Prote + ase: a protease breaks down protein. Meat is mostly protein.",
+  fb:["Starch is broken down by amylase.","Fat is broken down by lipase.",null,"Sugars are already small. A protease works on protein."]},
+ {q:"Fresh pineapple contains a protease. Jelly is made from a protein called gelatin. Fresh pineapple stops jelly from setting, but tinned pineapple (which has been heated) does not. Why?",opts:["Heating denatured the enzyme in the tinned pineapple","Tinned pineapple has more sugar, which blocks the protease's active site","The canning process removes all the protein from the pineapple","Heat makes the protease work too fast and use itself up"],a:0,
+  why:"The heat in the canning process denatured the protease, so it can no longer break down the gelatin.",
+  fb:[null,"Sugar is not the inhibitor here. The heat is the key.","The enzyme is itself a protein, and the heat changed its shape. It was not removed.","Enzymes are not used up. The heat denatured it."]},
+ {q:"Biological washing powder has enzymes that digest food stains. The packet says to use warm water, not boiling water. Why?",opts:["Boiling water would denature the enzymes","Boiling water would destroy the food stains before the enzymes could act","Boiling water is not acidic enough for the enzymes","Boiling water would make the enzymes work so fast that they use themselves up"],a:0,
+  why:"Boiling water would change the enzymes' shape, so they would stop working.",
+  fb:[null,"The enzymes are the ones doing the work on the stains. Think about what boiling does to the enzymes.","This is about temperature, not acidity.","Enzymes are not used up. Think about their shape."]},
+ {q:"Some bacteria live in hot springs at 75 °C. Their enzymes work best at about 75 °C. What does this tell you?",opts:["Their enzymes keep their shape at temperatures that would denature ours","Their enzymes have no activation energy to overcome","Their enzymes work faster because heat cannot affect their active sites","Their enzymes are made from substances other than proteins"],a:0,
+  why:"Different enzymes have different optimum temperatures. These ones keep their shape in great heat.",
+  fb:[null,"Every reaction has an activation energy. Enzymes only lower it.","Heat does affect enzymes. These ones simply have a much higher optimum.","Enzymes are always proteins, even in hot springs."]},
+ {q:"A student adds more enzyme to a reaction, but the speed does not change. What is the most likely reason?",opts:["There is not enough substrate, so the substrate is now limiting the speed","The extra enzyme is used up as soon as it is added","The enzymes are competing with each other for the same active site","The reaction is at its optimum temperature, so more enzyme cannot help"],a:0,
+  why:"If there is hardly any substrate, extra enzymes have nothing to work on. The substrate is now the limit.",
+  fb:[null,"Enzymes are not used up.","Each enzyme has its own active site. They do not compete with each other.","Being at the optimum temperature means the enzymes work at their best. More enzyme can still help if there is plenty of substrate."]},
+ {q:"Some people do not make enough lactase. What happens when they drink milk?",opts:["The lactose is not broken down properly, so it causes stomach trouble","The stomach acid breaks the lactose down instead","Amylase takes over and breaks down the lactose","The lactose goes straight into the blood without being digested"],a:0,
+  why:"Only lactase fits lactose. Undigested lactose reaches the large intestine, where bacteria feed on it and cause gas and discomfort. This is called lactose intolerance.",
+  fb:[null,"Acid cannot do this job. The enzyme lactase is needed.","Amylase works on starch. Its shape does not fit lactose.","Lactose is too big to be absorbed until it is split. It passes on undigested."]},
+ {q:"Starch and amylase are mixed in a test tube with acid at pH 2. No sugar is made. Why?",opts:["The acid changed amylase's shape, so starch no longer fits","Acid is a competitive inhibitor of amylase","Amylase needs a cofactor and the acid took it away","The acid used up the starch before amylase could reach it"],a:0,
+  why:"Amylase's optimum is about pH 7. At pH 2 its shape changes, so starch does not fit the active site.",
+  fb:[null,"A competitive inhibitor looks like the substrate. Acid does not. Think about the enzyme's shape.","Nothing in this question mentions a cofactor. Think about what pH 2 does to a protein.","Acid does not use up starch. Think about what pH 2 does to a protein."]},
+ {q:"Which statement is correct?",opts:["Enzymes are used up during reactions, but the body replaces them","Enzymes are proteins that speed up reactions and can be used again","Enzymes only work in the organs where they are made","Enzymes only break big molecules into smaller ones"],a:1,
+  why:"Enzymes are reusable protein catalysts. And remember the muscle spot: enzymes build things up too.",
+  fb:["Enzymes are not used up at all. That is why a little goes a long way.",null,"Many enzymes work elsewhere. Amylase is made in the salivary glands but works in the mouth.","Enzymes also join small molecules together, such as when muscle is built."]},
+],
+};
+
+const PREDICT={
+ s3:{opts:['Molecule A','Molecule B','Molecule C'],a:2,after:'Locked in! Now test it: drag each molecule onto the pocket at the top of the enzyme.'},
+ s4:{opts:['It keeps getting faster and faster, forever','It gets faster at first, then stops getting faster','It gets slower and slower'],a:1},
+ s5:{opts:['He works faster and faster, the hotter he gets','He works faster up to a point, then stops working','Nothing changes. Heat does not affect him'],a:1},
+};
+
+const FIT=/(n[o']?t|no longer|cannot|can'?t|won'?t|unable to|doesn'?t|does not)\s+(be\s+able\s+to\s+)?(fit|match|bind|go in|enter)/;
+const EXPLAIN={
+ s2:{q:'Explain why a small amount of amylase can digest a large amount of starch.',
+  points:[
+   {label:'Says the enzyme is not used up in the reaction',re:[/not\s+(get\s+|being\s+)?used\s+up|isn'?t\s+used\s+up|not\s+consumed|n[o']?t\s+(get\s+)?used\s+up|not\s+destroyed|unchanged|doesn'?t\s+get\s+used/]},
+   {label:'Says the same enzyme can work again and again',re:[/again|reuse|re-use|over and over|many times|repeated|free to|more than once/]},
+   {label:'Says it is a catalyst / speeds up the reaction',re:[/catalyst|speed|faster|quick/]},
+  ],
+  model:'Amylase is a catalyst. It speeds up the breakdown of starch but is not used up in the reaction. After each starch molecule is broken down, the same amylase molecule is free to work again and again, so a small amount can digest a lot of starch.'},
+ s3:{q:'Explain why amylase can digest starch but cannot digest protein.',
+  points:[
+   {label:'Mentions the active site',re:[/active\s*site/]},
+   {label:'Says the shape of starch fits / is complementary to the active site',re:[/complement|fits?\b|match|right shape|same shape/]},
+   {label:'Says protein has a different shape and does not fit',re:[FIT,/different shape|wrong shape|not complementary|not the right shape|doesn'?t have the (right|same) shape/]},
+   {label:'Uses the word substrate',re:[/substrate/]},
+  ],
+  model:'Starch is the substrate for amylase. Its shape is complementary to amylase\'s active site, so it fits like a key in a lock. Protein has a different shape, so it does not fit into amylase\'s active site and cannot be digested by it.'},
+ s4:{q:'Explain why adding more and more substrate eventually stops making the reaction any faster.',
+  points:[
+   {label:'At first, more substrate means more collisions with enzymes',re:[/collision|collide|bump|more chance|meet/]},
+   {label:'Mentions active sites',re:[/active\s*site/]},
+   {label:'Says all the active sites become busy / full / occupied',re:[/busy|full|occupied|saturat|all\s+(being\s+)?used|taken|no\s+free|no\s+(more\s+)?(space|room)|filled/]},
+   {label:'Says the amount of enzyme now limits the speed',re:[/limit|not enough enzyme|only so many|fixed number|no more enzyme|need more enzyme|more enzyme/]},
+  ],
+  model:'At first, more substrate means more collisions between substrate and enzymes, so the reaction speeds up. Eventually all the active sites are busy (occupied) at the same time. Extra substrate has to wait for a free active site, so the amount of enzyme now limits the speed and the rate levels off.'},
+ s5:{q:'Explain why an enzyme stops working at a very high temperature, even though it is not alive.',
+  points:[
+   {label:'Says the enzyme is a protein',re:[/protein/]},
+   {label:'Says heat changes the enzyme\'s shape',re:[/shape|unfold|structure|bent|bend/]},
+   {label:'Says the substrate no longer fits the active site',re:[FIT,/active\s*site/]},
+   {label:'Uses the word denatured',re:[/denatur/]},
+  ],
+  model:'An enzyme is a protein, not a living thing. Very high temperatures change the shape of the enzyme, including its active site. The substrate no longer fits the active site, so the reaction stops. We say the enzyme is denatured.'},
+ s7:{q:'Explain the difference between a competitive and a non-competitive inhibitor.',
+  points:[
+   {label:'A competitive inhibitor goes into / blocks the active site',re:[/block|sits?\s+in|goes\s+in|enters?|occup|fills?|takes?\s+(up\s+)?(the\s+)?(active|space|place)/]},
+   {label:'It has a similar shape to the substrate / competes with it',re:[/compet|similar|same\s+shape|looks?\s+like|like the substrate|nearly the same/]},
+   {label:'A non-competitive inhibitor attaches somewhere else, not the active site',re:[/somewhere\s+else|elsewhere|another\s+(part|place|site|spot)|different\s+(part|place|site|spot)|other\s+(part|place|site|side|spot)|side\s+of|back\s+of|not\s+(in|at|on)\s+the\s+active|outside/]},
+   {label:'It changes the shape of the enzyme / active site',re:[/shape|bend|bent|distort|deform/]},
+  ],
+  model:'A competitive inhibitor has a shape similar to the substrate. It enters the active site and blocks it, so it competes with the substrate. A non-competitive inhibitor attaches to another part of the enzyme, not the active site. It changes the shape of the enzyme, so the active site no longer fits the substrate.'},
+ s8:{q:'Green pawpaw makes tough meat tender because of the enzyme papain. Explain why pawpaw that has been cooked would NOT make meat tender.',
+  points:[
+   {label:'Papain is a protease / protein that breaks down meat protein',re:[/protein|protease/]},
+   {label:'Cooking (heat) changes papain\'s shape',re:[/shape|unfold|structure|bent|bend/]},
+   {label:'The meat protein (substrate) no longer fits the active site',re:[FIT,/active\s*site/]},
+   {label:'Uses the word denatured',re:[/denatur/]},
+  ],
+  model:'Papain is a protease, an enzyme that breaks down the protein in meat. Cooking heats the papain above its optimum temperature, which changes its shape. The meat protein (the substrate) no longer fits the active site, so the papain cannot break it down. The papain is denatured.'},
+};
+
+/* ===== points, name and class, sending results ===== */
+const ACTS=['body','race','hill','lock','slow','coll','temp','ph','cof','inh','lights'];
+const PTS={act:2,pred:2,chk:1,first:0.5,ex:3};   /* 22 + 6 + 36 + 18 + 18 = 100 */
+const PARTS=[null,
+ {acts:['body'],preds:[],qs:['s1'],ex:null},
+ {acts:['race','hill'],preds:[],qs:['s2'],ex:'s2'},
+ {acts:['lock','slow'],preds:['s3'],qs:['s3'],ex:'s3'},
+ {acts:['coll'],preds:['s4'],qs:['s4'],ex:'s4'},
+ {acts:['temp','ph'],preds:['s5'],qs:['s5a','s5b'],ex:'s5'},
+ {acts:['cof'],preds:[],qs:['s6'],ex:null},
+ {acts:['inh'],preds:[],qs:['s7a','s7b'],ex:'s7'},
+ {acts:['lights'],preds:[],qs:['s8'],ex:'s8'}];
+const RANKS=[[0,'Trainee wingman'],[25,'Helper'],[50,'Pro wingman'],[75,'Master wingman'],[99.9,'Legend']];
+const qlen=k=>k==='s1'?SORT_S1.length:QUIZ[k].length;
+const fmt=n=>{const r=Math.round(n*2)/2;return Number.isInteger(r)?String(r):r.toFixed(1)};
+const rankOf=p=>{let r=RANKS[0][1];RANKS.forEach(x=>{if(p>=x[0])r=x[1];});return r;};
+
+function partCalc(i){
+  const p=PARTS[i];let got=0,max=0;const c={acts:0,preds:0,chk:0,first:0,ex:0};
+  p.acts.forEach(a=>{max+=PTS.act;if(S.gates[a]){got+=PTS.act;c.acts++;}});
+  p.preds.forEach(k=>{max+=PTS.pred;if(S.pred[k]!=null){got+=PTS.pred;c.preds++;}});
+  p.qs.forEach(k=>{for(let n=0;n<qlen(k);n++){max+=PTS.chk+PTS.first;const r=S.quiz[k+'-'+n];if(r&&r.done){got+=PTS.chk;c.chk++;if(r.first){got+=PTS.first;c.first++;}}}});
+  if(p.ex){max+=PTS.ex;const r=S.ex[p.ex];if(r&&r.ticks){got+=PTS.ex;c.ex++;}}
+  return {got,max,c};
+}
+function scoreAll(){
+  let total=0,partsDone=0;const t={acts:0,preds:0,chk:0,first:0,ex:0},per=[null];
+  for(let i=1;i<=8;i++){const r=partCalc(i);per[i]=r;total+=r.got;if(r.got>=r.max-0.001)partsDone++;for(const k in t)t[k]+=r.c[k];}
+  return {total,partsDone,t,per};
+}
+const whoOk=()=>!!(S.name&&S.name.trim()&&S.cls);
+function partPct(i){
+  if(i===0)return whoOk()?100:0;
+  if(i===secs.length-1)return S.sentPts!=null?100:0;
+  const r=partCalc(i);return r.got/r.max*100;
+}
+
+/* ---- the points chip ---- */
+let shown=null,shownRank=null;
+function updateScore(){
+  const chip=document.getElementById('scoreChip');if(!chip)return;
+  const r=scoreAll(),tot=r.total;
+  chip.textContent=`⭐ ${fmt(tot)} / 100`;
+  document.getElementById('sbarFill').style.width=tot+'%';
+  const rk=rankOf(tot);document.getElementById('rankTxt').textContent=rk;
+  if(shown!==null&&tot>shown+0.01){
+    const d=tot-shown;const pop=document.createElement('div');pop.className='scorepop';pop.textContent='+'+fmt(d);
+    const b=chip.getBoundingClientRect();pop.style.left=(b.left+b.width/2-16)+'px';pop.style.top=(b.top-4)+'px';document.body.appendChild(pop);setTimeout(()=>pop.remove(),1400);
+    chip.classList.remove('bump');void chip.offsetWidth;chip.classList.add('bump');
+    if(shownRank&&rk!==shownRank)setTimeout(()=>toast('New rank: '+rk+'! 🎉',3200),900);
+  }
+  shown=tot;shownRank=rk;refreshDots();
+}
+
+/* ---- jumping in late ---- */
+function jump(i){
+  const msgs=[];
+  if(i>1&&i<secs.length-1&&(S.nudgeMax||0)<i){
+    const miss=[];for(let j=1;j<i;j++)if(partPct(j)<99.9)miss.push(j);
+    if(miss.length){S.nudgeMax=i;msgs.push(`Jumping in late? No problem. Part${miss.length>1?'s':''} ${miss.join(', ')} ${miss.length>1?'are':'is'} still open, so come back later to collect those points.`);}
+  }
+  if(i>0&&!whoOk()&&!S.whoNudged){S.whoNudged=true;msgs.push('Add your name and class on the ⌂ page so your points count.');}
+  if(msgs.length){save();toast(msgs.join(' '),5200);}
+  go(i);
+}
+
+/* ---- name and class ---- */
+function initScore(){
+  const opts='<option value="">Choose your class…</option>'+CLASSES.map(c=>`<option>${c}</option>`).join('');
+  const names=['whoName','sendName'].map(id=>document.getElementById(id)),sels=['whoClass','sendClass'].map(id=>document.getElementById(id));
+  sels.forEach(s=>{s.innerHTML=opts;s.value=S.cls||'';});
+  names.forEach(n=>{n.value=S.name||'';});
+  const start=document.getElementById('startBtn');
+  const sync=()=>{names.forEach(n=>{if(n.value!==(S.name||''))n.value=S.name||'';});sels.forEach(s=>{if(s.value!==(S.cls||''))s.value=S.cls||'';});start.disabled=!whoOk();};
+  names.forEach(n=>n.oninput=()=>{S.name=n.value;save();sync();});
+  sels.forEach(s=>s.onchange=()=>{S.cls=s.value;save();sync();});
+  sync();
+  document.getElementById('sendBtn').onclick=sendScore;
+  document.getElementById('copyRes').onclick=()=>{const t=resultsText();copyText(t).then(ok=>toast(ok?'Copied! Paste it into a message to Mr. Legall.':'Could not copy. Take a screenshot instead.',3200));};
+  document.getElementById('goBackList').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(+b.dataset.go);});
+  updateScore();
+}
+
+/* ---- results page ---- */
+function exAnswers(){
+  const out=[];['s2','s3','s4','s5','s7','s8'].forEach(k=>{const r=S.ex[k];if(r&&r.text&&r.text.trim())out.push(`Part ${{s2:2,s3:3,s4:4,s5:5,s7:7,s8:8}[k]}: ${r.text.trim().replace(/\s+/g,' ')}`);});
+  return out.join(' | ');
+}
+function payload(){
+  const r=scoreAll();
+  return {name:(S.name||'').trim(),cls:S.cls||'',points:fmt(r.total),parts:String(r.partsDone),acts:String(r.t.acts),checks:String(r.t.chk),first:String(r.t.first),explain:String(r.t.ex),answers:exAnswers(),ver:PAGE_VERSION};
+}
+function resultsText(){
+  const r=scoreAll(),p=payload();
+  return `Your Body's Wingmen\nName: ${p.name||'(no name)'}\nClass: ${p.cls||'(no class)'}\nDate: ${new Date().toLocaleDateString('en-TT')}\nPoints: ${p.points} / 100 (${rankOf(r.total)})\nParts finished: ${p.parts} of 8\nActivities: ${p.acts} of 11 · Quick checks done: ${p.checks} of 36 · Right first time: ${p.first}\nExplain-it boxes done: ${p.explain} of 6`;
+}
+function formLink(){
+  if(!FORM.action)return '';
+  const p=payload();p.answers=p.answers.slice(0,700);
+  return FORM.action.replace('/formResponse','/viewform')+'?usp=pp_url'+Object.keys(FORM.entries).map(k=>`&${FORM.entries[k]}=${encodeURIComponent(p[k]||'')}`).join('');
+}
+function showResults(){
+  const r=scoreAll();
+  document.getElementById('resBig').textContent=`${fmt(r.total)} / 100`;
+  document.getElementById('resLine').textContent=`${rankOf(r.total)} · ${r.partsDone} of 8 parts finished`;
+  const t=r.t;
+  const rows=[['Hands-on activities',t.acts*PTS.act,11*PTS.act],['Predictions',t.preds*PTS.pred,3*PTS.pred],['Quick checks finished',t.chk*PTS.chk,36*PTS.chk],['First-try bonus',t.first*PTS.first,36*PTS.first],['Explain-it boxes',t.ex*PTS.ex,6*PTS.ex]];
+  document.getElementById('resList').innerHTML=rows.map(x=>`<div class="partrow"><span>${x[0]}</span><span class="pill"><b>${fmt(x[1])}</b> / ${fmt(x[2])}</span></div>`).join('');
+  document.getElementById('goBackList').innerHTML=r.per.map((p,i)=>i?`<div class="partrow"><span>Part ${i}: ${secs[i].dataset.title}</span>${p.got>=p.max-0.001?'<span class="pill">✅ Done</span>':`<span class="pill"><b>${fmt(p.got)}</b> / ${fmt(p.max)}</span><button class="btn sm alt" data-go="${i}">Go back</button>`}</div>`:'').join('');
+  const link=document.getElementById('formLink'),fl=formLink();
+  link.style.display=fl?'':'none';if(fl)link.href=fl;
+  document.getElementById('notConn').style.display=FORM.action?'none':'';
+  setSendStatus();
+  refreshDots();
+}
+function setSendStatus(){
+  const el=document.getElementById('sendStatus');
+  el.textContent=S.sentPts!=null?`Last sent: ${S.sentPts} points at ${S.sentAt}. If you earn more, send again.`:'';
+}
+async function sendScore(){
+  if(!whoOk()){toast('Add your name and choose your class first.',3200);(S.name?document.getElementById('sendClass'):document.getElementById('sendName')).focus();return;}
+  if(!FORM.action){toast('This page is not connected to a form yet. Use Copy my results.',3600);return;}
+  const p=payload(),body=new URLSearchParams();
+  Object.keys(FORM.entries).forEach(k=>body.append(FORM.entries[k],p[k]||''));
+  const btn=document.getElementById('sendBtn');btn.disabled=true;btn.textContent='Sending…';
+  try{
+    await fetch(FORM.action,{method:'POST',mode:'no-cors',body});
+    S.sentPts=p.points;S.sentAt=new Date().toLocaleTimeString('en-TT',{hour:'2-digit',minute:'2-digit'});save();
+    toast('Sent to Mr. Legall! ✅',3200);
+  }catch(e){toast('Could not send. Use the link below it, or copy your results.',4200);}
+  btn.disabled=false;btn.textContent='📨 Send my points to Mr. Legall';showResults();
+}
+
+/* ===== Part 1: body map ===== */
+const SPOTS=[
+ {id:'mouth',x:120,y:63,lab:'Mouth',lx:154,ly:50,an:'start',kind:0,title:'Mouth: starch into sugar',enz:'amylase',inL:'starch',outL:'sugars',
+  text:'Amylase in your saliva cuts long starch chains (from roti, bread and rice) into small sugars. That is why bread starts to taste sweet if you chew it long enough.',
+  off:'👄 Starch from your roti would sit in your mouth for years without changing.'},
+ {id:'liver',x:102,y:142,lab:'Liver',lx:84,ly:126,an:'end',kind:0,title:'Liver: cleaning up a poison',enz:'catalase',inL:'hydrogen peroxide',outL:'water + oxygen',
+  text:'Your cells make hydrogen peroxide, a harmful waste. Catalase breaks it down into harmless water and oxygen, millions of molecules every second.',
+  off:'🧪 Hydrogen peroxide would build up and damage your cells.'},
+ {id:'gut',x:124,y:196,lab:'Small intestine',lx:62,ly:206,an:'end',kind:0,title:'Small intestine: splitting sugar',enz:'sucrase',inL:'sucrose',outL:'glucose + fructose',
+  text:'Sucrase splits table sugar (sucrose) into two smaller sugars, glucose and fructose. Only small molecules like these can pass into your blood.',
+  off:'🌀 Food would pass straight through you. Nothing could be absorbed.'},
+ {id:'muscle',x:184,y:140,lab:'Muscle',lx:200,ly:122,an:'start',kind:1,title:'Muscle: building up',enz:'enzymes',inL:'amino acids',outL:'protein',
+  text:'After exercise, enzymes join small building blocks called amino acids into long protein chains. That is how muscle is repaired and built.',
+  off:'💪 Your muscles could not grow or repair themselves.'},
+ {id:'cell',x:146,y:318,lab:'Every cell',lx:166,ly:318,an:'start',kind:0,title:'Every cell: releasing energy',enz:'enzymes',inL:'glucose + oxygen',outL:'energy!',
+  text:'In every cell, a chain of enzymes breaks down glucose using oxygen to release energy. This is called respiration. It powers everything you do, even reading this.',
+  off:'⚡ Your cells could not release energy from food. You would not survive more than a few minutes.'},
+];
+function bodySVG(){
+  const B='#E9E0F8',S='#CDBFEA';
+  let s=`<svg class="bodysvg" viewBox="-50 0 310 400" role="img" aria-label="Human body with five glowing spots">
+  <g fill="${B}" stroke="${S}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+   <polyline points="80,100 58,160 48,222" fill="none" stroke="${B}" stroke-width="24"/>
+   <polyline points="160,100 182,160 192,222" fill="none" stroke="${B}" stroke-width="24"/>
+   <polyline points="100,226 96,300 94,385" fill="none" stroke="${B}" stroke-width="30"/>
+   <polyline points="140,226 144,300 146,385" fill="none" stroke="${B}" stroke-width="30"/>
+   <path d="M80 92 Q120 80 160 92 L168 226 Q120 242 72 226 Z"/>
+   <rect x="110" y="72" width="20" height="16" rx="4" stroke="none"/>
+   <circle cx="120" cy="46" r="30"/>
+  </g>
+  <path d="M84 132 Q104 120 124 132 Q118 156 92 154 Q82 148 84 132Z" fill="#C7746B" opacity=".45"/>
+  <path d="M104 186 q8 -10 16 0 t16 0 M104 198 q8 -10 16 0 t16 0 M104 210 q8 -10 16 0 t16 0" stroke="#E98AA6" stroke-width="5" fill="none" opacity=".7" stroke-linecap="round"/>
+  <ellipse cx="183" cy="140" rx="10" ry="16" fill="#E58A8A" opacity=".45" transform="rotate(-20 183 140)"/>
+  <circle cx="146" cy="318" r="9" fill="none" stroke="#9FD4B5" stroke-width="2" stroke-dasharray="3 2"/>
+  <path d="M110 62 Q120 68 130 62" stroke="#8A6FB8" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <circle cx="110" cy="44" r="3" fill="#6C4AB6"/><circle cx="130" cy="44" r="3" fill="#6C4AB6"/>`;
+  SPOTS.forEach(p=>{
+    s+=`<g class="hot" data-id="${p.id}" tabindex="0" role="button" aria-label="${p.lab}">
+      <circle class="ring" cx="${p.x}" cy="${p.y}" r="10" fill="#FF8A1F" opacity=".6"/>
+      <circle class="core" cx="${p.x}" cy="${p.y}" r="10" fill="#FF8A1F" stroke="#fff" stroke-width="3"/>
+      <circle cx="${p.x}" cy="${p.y}" r="22" fill="transparent"/>
+      <text x="${p.lx}" y="${p.ly}" text-anchor="${p.an}" font-size="15" font-weight="800" fill="#211A33" style="paint-order:stroke;stroke:#FFF7EC;stroke-width:5px;font-family:Nunito,sans-serif">${p.lab}</text></g>`;
+  });
+  return s+'</svg>';
+}
+/* tiny molecule movie for each spot */
+function drawProcess(o,p,t){
+  const {ctx,W,H}=o;clear(o);
+  ctx.fillStyle='#FBF6EE';ctx.fillRect(0,0,W,H);
+  /* slow cycle: 0-3.5 s move in, 3.5-5.5 s inside the enzyme, 5.5-9 s products move out, 9-11 s rest, then repeat */
+  const ex=W/2,ey=82,P=11,ph=t%P;
+  const inX=ph<3.5?lerp(-60,ex-58,ease(ph/3.5)):ex-58, inA=ph<3.5?1:ph<4.3?1-(ph-3.5)/0.8:0;
+  const q=clamp((ph-5.5)/3.5,0,1), outX=lerp(ex+52,W-70,ease(q)), outA=ph<5.2?0:ph<5.5?(ph-5.2)/0.3:ph>9.8?Math.max(0,1-(ph-9.8)/0.8):1;
+  const pulse=ph>3.5&&ph<5.5?1+0.07*Math.sin((ph-3.5)/2*Math.PI*2):1;
+  const stepTxt=ph<3.5?'1. The molecule arrives…':ph<5.5?'2. The enzyme gets to work…':ph<9.8?'3. New, different molecules come out!':'';
+  if(stepTxt)label(ctx,stepTxt,ex,16,{size:13,color:'#5E5672'});
+  ctx.save();ctx.globalAlpha=inA;drawIn(ctx,p.id,inX,ey);ctx.restore();
+  drawEnzyme(ctx,ex,ey,30*pulse,{rot:-Math.PI/2,glow:ph>3.5&&ph<5.5?1:0,face:true});
+  ctx.save();ctx.globalAlpha=outA;drawOut(ctx,p.id,outX,ey,q,t);ctx.restore();
+  label(ctx,p.inL,72,148,{size:14,color:'#5E5672'});label(ctx,p.outL,W-82,148,{size:14,color:'#5E5672'});
+  label(ctx,p.enz,ex,134,{size:14,color:COL.enz});
+  arrow(ctx,ex-40,148,ex+40,148,'#BDB4CF',2);
+}
+function drawIn(ctx,id,x,y){
+  if(id==='mouth'){for(let i=0;i<6;i++){if(i)bond(ctx,x-37+(i-1)*15,y,x-37+i*15,y);}for(let i=0;i<6;i++)hex(ctx,x-37+i*15,y,7,'#F5B53D');}
+  else if(id==='gut'){bond(ctx,x-9,y,x+9,y);hex(ctx,x-10,y,9,'#F5B53D');pent(ctx,x+11,y,9,'#F28BB0');}
+  else if(id==='liver'){[[-14,-12],[8,12]].forEach(([dx,dy])=>{ball(ctx,x+dx-6,y+dy,6,'#E8406E');ball(ctx,x+dx+6,y+dy,6,'#E8406E');ball(ctx,x+dx-13,y+dy-5,3.5,'#fff');ball(ctx,x+dx+13,y+dy+5,3.5,'#fff');});}
+  else if(id==='muscle'){['#22A863','#1E8FD0','#FF8A1F','#E8406E'].forEach((c,i)=>ball(ctx,x-30+i*20,y+(i%2?8:-8),7,c));}
+  else {hex(ctx,x-8,y,10,'#F5B53D');ball(ctx,x+14,y-12,5,'#9AD0F5');ball(ctx,x+22,y-12,5,'#9AD0F5');}
+}
+function drawOut(ctx,id,x,y,q,t){
+  const s=q*26;
+  if(id==='mouth'){[-1,0,1].forEach((k,j)=>{const xx=x+j*10-10,yy=y+k*s;bond(ctx,xx-7,yy,xx+7,yy);hex(ctx,xx-7,yy,7,'#F5B53D');hex(ctx,xx+8,yy,7,'#F5B53D');});}
+  else if(id==='gut'){hex(ctx,x,y-s,9,'#F5B53D');pent(ctx,x+8,y+s,9,'#F28BB0');}
+  else if(id==='liver'){ball(ctx,x,y+s*0.6,6,'#E8406E');ball(ctx,x-8,y+s*0.6+5,3.5,'#fff');ball(ctx,x+8,y+s*0.6+5,3.5,'#fff');
+    for(let i=0;i<3;i++){ctx.strokeStyle='#1E8FD0';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x+i*12-10,y-s*1.4-i*6,5+i,0,TAU);ctx.stroke();}}
+  else if(id==='muscle'){for(let i=0;i<3;i++)bond(ctx,x-30+i*15,y,x-15+i*15,y);['#22A863','#1E8FD0','#FF8A1F','#E8406E'].forEach((c,i)=>ball(ctx,x-30+i*15,y,7,c));}
+  else {ctx.save();ctx.translate(x,y-4);ctx.scale(1+0.15*Math.sin(t*12),1+0.15*Math.sin(t*12));ctx.fillStyle='#FFC93C';ctx.strokeStyle='#C78A00';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(4,-20);ctx.lineTo(-10,3);ctx.lineTo(0,3);ctx.lineTo(-5,20);ctx.lineTo(11,-4);ctx.lineTo(1,-4);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();
+    ball(ctx,x-24,y+s,4,'#bbb');ball(ctx,x+22,y+s,4,'#9AD0F5');}
+}
+function setupBodyMap(rootId,mode){
+  const root=document.getElementById(rootId);root.querySelector('.bmsvg').innerHTML=bodySVG();
+  const panel=document.getElementById(rootId+'panel');
+  if(mode==='explore'){
+    const seen=new Set(S.bm||[]);let anim=null;const cnt=document.getElementById('bm1count');
+    const upd=()=>{root.querySelectorAll('.hot').forEach(h=>h.classList.toggle('seen',seen.has(h.dataset.id)));cnt.textContent=`${seen.size} of 5 explored`+(seen.size===5?' ✓':'');if(seen.size===5)unlock('body');};
+    const show=id=>{
+      const p=SPOTS.find(z=>z.id===id);seen.add(id);S.bm=[...seen];save();upd();
+      panel.innerHTML=`<div><span class="btag ${p.kind?'bld':'brk'}">${p.kind?'BUILDING UP':'BREAKING DOWN'}</span></div><h3>${p.title}</h3><canvas id="${rootId}cv" width="360" height="165" style="border-radius:12px"></canvas><p>${p.text}</p>`;
+      anim={o:cv(rootId+'cv'),p,t0:performance.now()/1000};
+    };
+    root.querySelectorAll('.hot').forEach(h=>{h.addEventListener('click',()=>show(h.dataset.id));h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();show(h.dataset.id);}});});
+    sim(1,rootId+'panel',{tick(dt,t){if(anim&&anim.o)drawProcess(anim.o,anim.p,t-anim.t0);}});
+    upd();
+  }else{
+    const btn=document.getElementById('lightsBtn');let off=false;
+    const on=()=>{panel.innerHTML=`<h3>✅ All enzymes ON</h3><p>Starch is digested. Poisons are cleaned up. Sugar is absorbed. Muscles are repaired. Every cell has energy. Thousands of reactions, every second, all at once.</p>`;};
+    btn.onclick=()=>{off=!off;root.classList.toggle('off-state',off);
+      if(off){panel.innerHTML=`<h3>❌ All enzymes OFF</h3>`+SPOTS.map(p=>`<p>${p.off}</p>`).join('')+`<p><b>Without enzymes, these reactions would still happen, but so slowly that life would be impossible.</b></p>`;btn.textContent='🔌 Switch them back ON';unlock('lights');}
+      else{on();btn.textContent='🔌 Switch all enzymes OFF';}};
+    on();
+  }
+}
+
+/* ===== Part 2a: the fete race ===== */
+(function(){
+  const A=cv('raceA'),B=cv('raceB');if(!A)return;
+  const R=36,PC={R:'#FF7BAC',V:'#3DD6C6'};
+  let mode='join',run=false,time=0,sides=[],parts=[],finished=false;
+  const TOTAL=15;
+  function mk(o,withW){
+    const ps=[];const n=6;
+    const rp=()=>({x:rnd(40,o.W-40),y:rnd(70,o.H-30),vx:rnd(-30,30),vy:rnd(-30,30),cd:0,held:false,claimed:false});
+    for(let i=0;i<n;i++){if(mode==='join'){ps.push(Object.assign(rp(),{k:'R'}));ps.push(Object.assign(rp(),{k:'V'}));}else ps.push(Object.assign(rp(),{k:'RV'}));}
+    const ws=withW?[{x:80,y:150,st:'find',tg:null,carry:[],tm:0,jobs:0},{x:o.W-80,y:150,st:'find',tg:null,carry:[],tm:0,jobs:0}]:[];
+    return {o,ps,ws,count:0,doneAt:null};
+  }
+  function reset(){sides=[mk(A,false),mk(B,true)];parts=[];time=0;finished=false;upd();}
+  function upd(){
+    document.getElementById('raceAc').textContent=`${mode==='join'?'Pairs made':'Splits'}: ${sides[0].count}`;
+    document.getElementById('raceBc').textContent=`${mode==='join'?'Pairs made':'Splits'}: ${sides[1].count}`;
+    document.getElementById('raceBr').textContent=`Jobs: wingman 1 = ${sides[1].ws[0].jobs}, wingman 2 = ${sides[1].ws[1].jobs}`;
+  }
+  function wander(o,p,dt){
+    p.vx+=rnd(-1,1)*90*dt;p.vy+=rnd(-1,1)*90*dt;const sp=Math.hypot(p.vx,p.vy),mx=42;if(sp>mx){p.vx*=mx/sp;p.vy*=mx/sp;}
+    p.x+=p.vx*dt;p.y+=p.vy*dt;
+    if(p.x<25){p.x=25;p.vx=Math.abs(p.vx);} if(p.x>o.W-25){p.x=o.W-25;p.vx=-Math.abs(p.vx);}
+    if(p.y<60){p.y=60;p.vy=Math.abs(p.vy);} if(p.y>o.H-22){p.y=o.H-22;p.vy=-Math.abs(p.vy);}
+  }
+  function burst(side,x,y,txt){parts.push({side,x,y,t:0,txt});}
+  function step(side,dt){
+    const {o,ps,ws}=side;
+    ps.forEach(p=>{if(!p.held)wander(o,p,dt);p.cd-=dt;});
+    if(!ws.length){
+      if(mode==='join'){
+        for(const a of ps)if(a.k==='R'&&!a.dead&&a.cd<=0)for(const b of ps)if(b.k==='V'&&!b.dead&&b.cd<=0&&Math.hypot(a.x-b.x,a.y-b.y)<26){
+          a.cd=b.cd=0.7;if(Math.random()<0.07){a.dead=b.dead=true;ps.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,vx:a.vx,vy:a.vy,k:'RV',cd:0,held:false});side.count++;burst(side,a.x,a.y-20,'♥');}break;}
+      }else{
+        for(const p of ps)if(p.k==='RV'&&!p.dead&&Math.random()<0.012*dt){p.dead=true;ps.push({x:p.x-12,y:p.y,vx:-40,vy:0,k:'R',cd:2,held:false,fin:true},{x:p.x+12,y:p.y,vx:40,vy:0,k:'V',cd:2,held:false,fin:true});side.count++;burst(side,p.x,p.y-20,'💔');}
+      }
+    }else ws.forEach(w=>{
+      const want=mode==='join'?(w.carry.length?'V':'R'):'RV';
+      if(w.st==='find'){
+        if(!w.tg||w.tg.dead||w.tg.held||(w.tg.claimed&&w.tg.claimed!==w)){
+          w.tg=null;let best=1e9;for(const p of ps)if(p.k===want&&!p.dead&&!p.held&&!p.fin&&(!p.claimed||p.claimed===w)){const d=Math.hypot(p.x-w.x,p.y-w.y);if(d<best){best=d;w.tg=p;}}
+          if(w.tg)w.tg.claimed=w;
+        }
+        if(w.tg){const dx=w.tg.x-w.x,dy=w.tg.y+18-w.y,d=Math.hypot(dx,dy);const sp=130*dt;
+          if(d<10){w.tg.held=true;w.carry.push(w.tg);w.tg=null;
+            if(mode==='split'||w.carry.length===2){w.st='react';w.tm=0.45;}}
+          else{w.x+=dx/d*Math.min(sp,d);w.y+=dy/d*Math.min(sp,d);}
+        }else{w.x+=Math.sin(time*1.3+w.jobs)*20*dt;}
+      }else if(w.st==='react'){
+        w.tm-=dt;if(w.tm<=0){
+          w.carry.forEach(p=>p.dead=true);
+          const sy=w.y-20;
+          if(mode==='join'){ps.push({x:w.x,y:sy,vx:rnd(-40,40),vy:-30,k:'RV',cd:0,held:false,fin:true});burst(side,w.x,sy-20,'♥');}
+          else{ps.push({x:w.x-14,y:sy,vx:-55,vy:-10,k:'R',cd:2,held:false,fin:true},{x:w.x+14,y:sy,vx:55,vy:-10,k:'V',cd:2,held:false,fin:true});burst(side,w.x,sy-20,'💔');}
+          w.carry=[];w.jobs++;side.count++;w.st='rest';w.tm=0.25;
+        }
+      }else if(w.st==='rest'){w.tm-=dt;if(w.tm<=0)w.st='find';}
+    });
+    side.ps=ps.filter(p=>!p.dead);
+    if(side.count>=6&&side.doneAt==null)side.doneAt=time;
+  }
+  function draw(side,t){
+    const {o,ps,ws}=side,ctx=o.ctx;feteBg(o,t);
+    ps.forEach(p=>{if(p.held)return;const bob=Math.sin(t*4+p.x)*2;
+      if(p.k==='RV')drawSub(ctx,p.x,p.y+bob,R,{part:'both',colorL:PC.R,colorR:PC.V,eyes:true});
+      else drawSub(ctx,p.x,p.y+bob,R,{part:p.k,colorL:PC.R,colorR:PC.V,eyes:true});});
+    ws.forEach(w=>{
+      drawEnzyme(ctx,w.x,w.y,R,{glow:w.st==='react'?1:0,t,wob:w.st==='react'?0.4:0});
+      ctx.save();ctx.translate(w.x,w.y);
+      w.carry.forEach(p=>subLocal(ctx,R,{part:p.k==='RV'?'both':p.k,colorL:PC.R,colorR:PC.V,eyes:true}));
+      ctx.restore();
+    });
+    parts.filter(q=>q.side===side).forEach(q=>{ctx.globalAlpha=Math.max(0,1-q.t);label(ctx,q.txt,q.x,q.y-q.t*30,{size:22,color:'#FF7BAC'});ctx.globalAlpha=1;});
+    if(run)label(ctx,`⏱ ${Math.max(0,Math.ceil(TOTAL-time))} s`,o.W-40,44,{size:15,color:'#FFC93C'});
+    if(side.doneAt!=null)label(ctx,`All 6 done in ${side.doneAt.toFixed(1)} s!`,o.W/2,o.H-14,{size:15,color:'#FFC93C',bg:'rgba(0,0,0,.45)'});
+  }
+  reset();
+  sim(2,'raceA',{tick(dt,t){
+    if(run){time+=dt;sides.forEach(s=>step(s,dt));parts.forEach(q=>q.t+=dt);parts=parts.filter(q=>q.t<1);upd();
+      if(time>=TOTAL){run=false;finished=true;
+        const a=sides[0].count,b=sides[1].count,w=mode==='join'?'pairs made':'splits';
+        document.getElementById('raceSay').textContent=`No wingman: ${a} ${w}. With wingmen: ${b} ${w}. Same people, same fete. The wingmen just made it happen much faster, and they were never used up.`;
+        unlock('race');document.getElementById('raceGo').textContent='↻ Run it again';}}
+    sides.forEach(s=>draw(s,t));
+  }});
+  document.getElementById('raceGo').onclick=()=>{reset();run=true;document.getElementById('raceSay').textContent=mode==='join'?'Watch: who makes more pairs?':'Watch: the wingman helps his friends out of bad matches 💔';};
+  document.querySelectorAll('#raceMode button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#raceMode button').forEach(x=>x.classList.toggle('on',x===b));mode=b.dataset.m;run=false;reset();document.getElementById('raceGo').textContent='▶ Start the fete';document.getElementById('raceSay').textContent=mode==='join'?'Joining: building something bigger (anabolic). Press start.':'Splitting: breaking something apart (catabolic). Press start.';});
+})();
+
+/* ===== Part 2b: the energy hill ===== */
+(function(){
+  const o=cv('hill');if(!o)return;const {ctx,W,H}=o;
+  const yS=235,yE=280,HI=180,LO=78,PUSH=108,X0=110,X1=690;
+  let Ht=HI,Hc=HI,enz=0,bl={x:X0,dir:0},result='';
+  const sm=v=>{v=clamp(v,0,1);return v*v*(3-2*v)};
+  const base=x=>yS+(yE-yS)*sm((x-330)/140);
+  const yAt=(x,h)=>base(x)-h*Math.exp(-Math.pow((x-400)/78,2));
+  const hgt=x=>yS-yAt(x,Hc);
+  const say=t=>document.getElementById('hillSay').textContent=t;
+  function curve(h,dashed,col,w){ctx.save();ctx.strokeStyle=col;ctx.lineWidth=w;if(dashed)ctx.setLineDash([8,8]);ctx.beginPath();for(let x=60;x<=730;x+=4){const y=yAt(x,h);x===60?ctx.moveTo(x,y):ctx.lineTo(x,y);}ctx.stroke();ctx.restore();}
+  sim(2,'hill',{tick(dt,t){
+    Hc+=(Ht-Hc)*Math.min(1,dt*4);
+    if(bl.dir){
+      const ke=PUSH-hgt(bl.x);const sp=60+15*Math.sqrt(Math.max(0,ke));
+      const nx=bl.x+bl.dir*sp*dt;
+      if(bl.dir>0&&PUSH-hgt(nx)<=0){bl.dir=-1;}
+      else bl.x=nx;
+      if(bl.dir<0&&bl.x<=X0){bl.x=X0;bl.dir=0;result='fail';say('Not enough energy to get over the hill. The reaction does not happen. Now switch the enzyme on.');}
+      if(bl.dir>0&&bl.x>=X1){bl.x=X1;bl.dir=0;result='ok';if(enz){say('Over the top! The SAME push is now enough. The enzyme lowered the hill, so the reaction happens.');unlock('hill');}}
+    }
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#FBF6EE';ctx.fillRect(0,0,W,H);
+    // fill under curve
+    ctx.beginPath();ctx.moveTo(60,H-30);for(let x=60;x<=730;x+=4)ctx.lineTo(x,yAt(x,Hc));ctx.lineTo(730,H-30);ctx.closePath();ctx.fillStyle='#EFE6FB';ctx.fill();
+    if(enz)curve(HI,true,'#BDB4CF',3);
+    curve(Hc,false,COL.enz,5);
+    arrow(ctx,32,H-34,32,40,'#5E5672',2.5);arrow(ctx,32,H-34,W-20,H-34,'#5E5672',2.5);
+    ctx.save();ctx.translate(18,170);ctx.rotate(-Math.PI/2);label(ctx,'Energy',0,0,{size:15,color:'#5E5672'});ctx.restore();
+    label(ctx,'Progress of the reaction →',W/2,H-14,{size:15,color:'#5E5672'});
+    label(ctx,'Start',X0,yS+34,{size:16});label(ctx,'(reactants)',X0,yS+52,{size:13,color:'#5E5672',w:700});
+    label(ctx,'Finish',X1-100,yE-42,{size:16});label(ctx,'(products)',X1-100,yE-22,{size:13,color:'#5E5672',w:700});
+    // activation energy bracket
+    const pk=yAt(400,Hc);ctx.save();ctx.setLineDash([5,5]);ctx.strokeStyle='#C9BEDF';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X0,yS);ctx.lineTo(470,yS);ctx.stroke();ctx.restore();
+    arrow(ctx,400,yS,400,pk+6,'#E8406E',3);arrow(ctx,400,pk+6,400,yS-2,'#E8406E',3);
+    label(ctx,'Activation energy',412,Math.min(yS-18,(yS+pk)/2),{align:'left',size:15,color:'#E8406E',bg:'rgba(251,246,238,.85)'});
+    if(enz&&Ht===LO){const a=clamp(1-(Hc-LO)/(HI-LO),0,1);drawEnzyme(ctx,620,110,26,{alpha:a});label(ctx,'The enzyme lowered the hill!',620,156,{size:14,color:COL.enz,w:800});}
+    const by=yAt(bl.x,Hc)-15;ball_(bl.x,by,t);
+    if(result==='ok')label(ctx,'✅ Reaction happened!',W/2,34,{size:17,color:'#1E9E5A',bg:'#E4F7EC'});
+  }});
+  function ball_(x,y,t){ctx.save();ctx.translate(x,y);ctx.rotate((x/15));ball(ctx,0,0,15,'#FF8A1F');ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-9,0);ctx.lineTo(9,0);ctx.stroke();ctx.restore();}
+  document.getElementById('hillPush').onclick=()=>{if(bl.dir)return;bl.x=X0;bl.dir=1;result='';say('Pushing…');};
+  document.querySelectorAll('#hillMode button').forEach(b=>b.onclick=()=>{if(bl.dir)return;document.querySelectorAll('#hillMode button').forEach(x=>x.classList.toggle('on',x===b));enz=+b.dataset.m;Ht=enz?LO:HI;bl.x=X0;result='';say(enz?'The enzyme is on. Look at the hill now. Push with the same force.':'No enzyme. Push the bl.');});
+})();
+
+/* ===== Part 3a: lock and key (drag) ===== */
+const LOCK={enabled:false};
+(function(){
+  const o=cv('lock');if(!o)return;const {ctx,W,H}=o;
+  const R=118,E={x:280,y:305};
+  const site=()=>({x:E.x,y:E.y+siteGeom(R).yTop-R*0.02});
+  const pcs=[{v:'RR',L:'A'},{v:'VV',L:'B'},{v:'RV',L:'C'}].map((p,i)=>Object.assign(p,{hx:652,hy:92+i*125,x:652,y:92+i*125,st:'home',t:0}));
+  let drag=null,off={x:0,y:0},shake=0,fit=null,ever=!!S.gates.lock,msg='';
+  LOCK.enable=()=>{LOCK.enabled=true;};
+  if(S.pred.s3!=null)LOCK.enabled=true;
+  const say=t=>document.getElementById('lockSay').textContent=t;
+  o.c.addEventListener('pointerdown',e=>{
+    const p=ptr(e,o);
+    if(!LOCK.enabled){toast('Make your guess below first 👇');return;}
+    if(fit)return;
+    for(const pc of pcs){if(pc.st==='home'&&Math.hypot(p.x-pc.x,p.y-pc.y)<65){drag=pc;pc.st='drag';off={x:pc.x-p.x,y:pc.y-p.y};o.c.setPointerCapture(e.pointerId);break;}}
+  });
+  o.c.addEventListener('pointermove',e=>{if(!drag)return;const p=ptr(e,o);drag.x=clamp(p.x+off.x,40,W-40);drag.y=clamp(p.y+off.y,30,H-20);});
+  const up=()=>{if(!drag)return;const pc=drag;drag=null;const s=site();
+    if(Math.hypot(pc.x-s.x,pc.y-s.y)<80){
+      if(pc.v==='RV'){pc.st='fit';fit={pc,t:0};say('');}
+      else{pc.st='back';pc.t=0;shake=0.5;say(`Molecule ${pc.L} does not fit the active site. Its shape is nearly right, but nearly right is not good enough. No reaction.`);}
+    }else{pc.st='back';pc.t=0;}
+  };
+  o.c.addEventListener('pointerup',up);o.c.addEventListener('pointercancel',up);
+  sim(3,'lock',{tick(dt,t){
+    ctx.clearRect(0,0,W,H);
+    // tray
+    ctx.fillStyle='#F1E8D8';rr(ctx,504,20,244,H-40,18);
+    pcs.forEach(pc=>label(ctx,pc.L,530,pc.hy-8,{size:26,color:'#B7A98F'}));
+    let ex=E.x;if(shake>0){shake-=dt;ex+=Math.sin(shake*40)*8;}
+    let scale=1,mood=1;
+    if(fit){fit.t+=dt;const ft=fit.t;
+      if(ft<0.3){const s=site();fit.pc.x=lerp(fit.pc.x,s.x,0.3);fit.pc.y=lerp(fit.pc.y,s.y,0.3);}
+      scale=ft>0.3&&ft<1.3?1+0.03*Math.sin((ft-0.3)*Math.PI):1;
+      if(ft>2.6){fit.pc.st='home';fit.pc.x=fit.pc.hx;fit.pc.y=fit.pc.hy;fit.pc.t=0;fit.pc.fadeIn=0;fit=null;
+        if(!ever){ever=true;}unlock('lock');
+        const pg=S.pred.s3;say(`Molecule C fits the active site exactly! The reaction happens, the products leave, and the enzyme is ready again.${pg!=null?(pg===2?' Your guess was right! 🎉':' (You guessed '+'ABC'[pg]+'. Shape is what decides it.)'):''}`);}
+    }
+    drawEnzyme(ctx,ex,E.y,R*scale,{t,glow:fit&&fit.t>0.3&&fit.t<1.4?1:0,mood});
+    // pieces
+    pcs.forEach(pc=>{
+      if(pc.st==='back'){pc.t+=dt*3;pc.x=lerp(pc.x,pc.hx,Math.min(1,pc.t));pc.y=lerp(pc.y,pc.hy,Math.min(1,pc.t));if(pc.t>=1){pc.st='home';pc.x=pc.hx;pc.y=pc.hy;}}
+      if(pc.fadeIn!=null){pc.fadeIn+=dt*2;if(pc.fadeIn>=1)pc.fadeIn=null;}
+      if(pc.st==='fit'&&fit){
+        const ft=fit.t;
+        if(ft<1.2){drawSub(ctx,pc.x,pc.y,R,{variant:'RV',eyes:true});}
+        else{const q=ease(clamp((ft-1.2)/1.3,0,1));const s=site();
+          drawSub(ctx,s.x-55-q*140,s.y-q*120,R,{part:'R',colorL:COL.pR,alpha:1-q*0.6,rot:-q*0.6});
+          drawSub(ctx,s.x+55+q*140,s.y-q*120,R,{part:'V',colorR:COL.pV,alpha:1-q*0.6,rot:q*0.6});
+          if(q>0.2)label(ctx,'Products',s.x,s.y-q*120-40,{size:16,color:'#5E5672',alpha:q});}
+      }else{
+        drawSub(ctx,pc.x,pc.y,R,{variant:pc.v,eyes:true,alpha:pc.fadeIn!=null?pc.fadeIn:1});
+      }
+    });
+    if(!LOCK.enabled)label(ctx,'Make your guess below 👇',E.x,40,{size:18,color:COL.enz});
+    else if(!ever&&!drag&&!fit)label(ctx,'Drag a molecule here ⬇',E.x,140,{size:17,color:COL.enz});
+    if(ever&&!fit){
+      label(ctx,'Enzyme',E.x,E.y+R*0.62,{size:17,color:'#fff'});
+      const s=site();arrow(ctx,E.x-150,s.y-40,s.x-50,s.y+8,'#E8406E',2.5);label(ctx,'Active site',E.x-170,s.y-52,{size:16,color:'#E8406E'});
+      label(ctx,'Substrate',652,pcs[2].hy+50,{size:15,color:'#3A8E1E'});
+    }
+  }});
+})();
+
+/* ===== Part 3b: slow motion ===== */
+(function(){
+  const o=cv('slowmo');if(!o)return;const {ctx,W,H}=o;
+  const R=104,E={x:380,y:268};let t0=null,doneOnce=false;
+  const caps=['1. The substrate moves towards the active site.','2. It fits! Together they form the enzyme–substrate complex.','3. While it is in the active site, the substrate is changed into products.','4. The products leave. The enzyme is unchanged, and ready to go again.'];
+  const mix=(a,b,q)=>{const h=x=>[1,3,5].map(i=>parseInt(x.substr(i,2),16));const A=h(a),B=h(b);return'#'+A.map((v,i)=>Math.round(lerp(v,B[i],q)).toString(16).padStart(2,'0')).join('');};
+  sim(3,'slowmo',{tick(dt,now){
+    ctx.clearRect(0,0,W,H);
+    const t=t0==null?0:now-t0;
+    const stg=t<3?0:t<6?1:t<8.5?2:3;
+    const s0=sitePos(E.x,E.y,R,0);
+    drawEnzyme(ctx,E.x,E.y,R,{glow:stg===1?0.6+0.4*Math.sin(now*4):0,t:now});
+    if(t<3){const q=ease(clamp(t/3,0,1));drawSub(ctx,s0.x,lerp(40,s0.y,q),R,{variant:'RV',eyes:true});}
+    else if(t<8.5){const q=clamp((t-6)/2.5,0,1);ctx.save();ctx.translate(E.x,E.y);subLocal(ctx,R,{colorL:mix(COL.sub,COL.pR,q),colorR:mix(COL.sub,COL.pV,q),eyes:true});ctx.restore();}
+    else{const q=ease(clamp((t-8.5)/3,0,1));
+      drawSub(ctx,s0.x-48-q*170,s0.y-q*110,R,{part:'R',colorL:COL.pR,alpha:1-q*0.5,rot:-q*0.5});
+      drawSub(ctx,s0.x+48+q*170,s0.y-q*110,R,{part:'V',colorR:COL.pV,alpha:1-q*0.5,rot:q*0.5});}
+    for(let i=0;i<4;i++)ball(ctx,24+i*22,22,7,i<=stg&&t0!=null?COL.enz:'#E2D9F0');
+    label(ctx,t0==null?'Press play to watch.':caps[stg],W/2,H-18,{size:17,color:COL.ink,bg:'rgba(255,255,255,.85)'});
+    if(t0!=null&&t>12){t0=null;if(!doneOnce){doneOnce=true;unlock('slow');}document.getElementById('slowGo').textContent='↻ Play again';}
+  }});
+  document.getElementById('slowGo').onclick=()=>{t0=performance.now()/1000;};
+})();
+
+/* ===== Part 4a: crowded fete (collisions) ===== */
+(function(){
+  const o=cv('coll');if(!o)return;const {ctx,W,H}=o;
+  const R=24,LV=[2,4,8,14,22,32,45,60];let li=1,nE=3,maxLi=1,used6=false;
+  let enz=[],subs=[],prods=[],done=[],rateS=0,busyS=0;
+  const newE=()=>({x:rnd(60,W-60),y:rnd(70,H-50),vx:rnd(-20,20),vy:rnd(-20,20),rot:rnd(0,TAU),vr:rnd(-0.7,0.7),busy:0});
+  const farPos=()=>{for(let k=0;k<30;k++){const x=rnd(20,W-20),y=rnd(40,H-20);if(enz.every(e=>Math.hypot(e.x-x,e.y-y)>90))return{x,y};}return{x:rnd(20,W-20),y:rnd(40,H-20)};};
+  const newS=()=>{const p=farPos();const a=rnd(0,TAU);return{x:p.x,y:p.y,vx:Math.cos(a)*140,vy:Math.sin(a)*140,rot:rnd(0,TAU),vr:rnd(-2,2)};};
+  for(let i=0;i<nE;i++)enz.push(newE());
+  const syncS=()=>{while(subs.length<LV[li])subs.push(newS());if(subs.length>LV[li])subs.length=LV[li];document.getElementById('subVal').textContent=LV[li];};
+  syncS();
+  const move=(p,dt,m)=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.rot+=p.vr*dt;if(p.x<m){p.x=m;p.vx=Math.abs(p.vx);}if(p.x>W-m){p.x=W-m;p.vx=-Math.abs(p.vx);}if(p.y<m+20){p.y=m+20;p.vy=Math.abs(p.vy);}if(p.y>H-m){p.y=H-m;p.vy=-Math.abs(p.vy);}};
+  const say=t=>{const el=document.getElementById('collSay');if(el.textContent!==t)el.textContent=t;};
+  sim(4,'coll',{tick(dt,t){
+    const now=t;
+    subs.forEach(s=>{const a=Math.atan2(s.vy,s.vx)+rnd(-1,1)*2*dt;s.vx=Math.cos(a)*140;s.vy=Math.sin(a)*140;move(s,dt,14);});
+    enz.forEach(e=>{e.vx+=rnd(-1,1)*30*dt;e.vy+=rnd(-1,1)*30*dt;const sp=Math.hypot(e.vx,e.vy);if(sp>25){e.vx*=25/sp;e.vy*=25/sp;}move(e,dt,R+6);
+      if(e.busy>0){e.busy-=dt;if(e.busy<=0){e.busy=0;const s=sitePos(e.x,e.y,R,e.rot);const nx=Math.cos(e.rot),ny=Math.sin(e.rot);
+        prods.push({x:s.x-nx*8,y:s.y-ny*8,vx:-nx*60-Math.sin(e.rot)*-30,vy:-ny*60+Math.cos(e.rot)*-30,rot:e.rot,part:'R',life:1.3},{x:s.x+nx*8,y:s.y+ny*8,vx:nx*60-Math.sin(e.rot)*-30,vy:ny*60+Math.cos(e.rot)*-30,rot:e.rot,part:'V',life:1.3});
+        done.push(now);subs.push(newS());}}
+      else{const s=sitePos(e.x,e.y,R,e.rot);const fx=Math.sin(e.rot),fy=-Math.cos(e.rot);for(let i=0;i<subs.length;i++){const u=subs[i];const dx=u.x-e.x,dy=u.y-e.y,dc=Math.hypot(dx,dy);
+        if(dc<R*1.6){subs.splice(i,1);e.rot=Math.atan2(dx,-dy);e.vr=rnd(-0.7,0.7);e.busy=2.0;break;}}}
+    });
+    prods.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;});prods=prods.filter(p=>p.life>0);
+    done=done.filter(x=>now-x<6);
+    const rate=done.length/6;rateS+=(rate-rateS)*Math.min(1,dt*1.5);
+    const busy=enz.filter(e=>e.busy>0).length;busyS+=(busy/enz.length-busyS)*Math.min(1,dt*2);
+    document.getElementById('rateVal').textContent=rateS.toFixed(1);
+    document.getElementById('busyVal').textContent=`${busy}/${enz.length}`;
+    if(nE===3){say(li<=1?'Not many collisions. The wingmen spend most of their time waiting for substrate.':busyS<0.7?'More substrate means more collisions, so the speed goes up.':'Every wingman is busy! Extra substrate has to wait its turn. The speed has stopped going up.');}
+    else say(busyS>0.7?'Double the wingmen, so about double the top speed.':'More wingmen are ready. Add substrate to keep them all busy.');
+    // draw
+    feteBg(o,t);
+    prods.forEach(p=>drawSub(ctx,p.x,p.y,R,{part:p.part,colorL:COL.pR,colorR:COL.pV,rot:p.rot,alpha:clamp(p.life,0,1)}));
+    subs.forEach(s=>drawSub(ctx,s.x,s.y,R,{rot:s.rot}));
+    enz.forEach(e=>{drawEnzyme(ctx,e.x,e.y,R,{rot:e.rot,glow:e.busy>0?1:0});if(e.busy>0){ctx.save();ctx.translate(e.x,e.y);ctx.rotate(e.rot);subLocal(ctx,R,{});ctx.restore();}});
+  }});
+  document.getElementById('subPlus').onclick=()=>{if(li<LV.length-1){li++;syncS();maxLi=Math.max(maxLi,li);chk();}};
+  document.getElementById('subMinus').onclick=()=>{if(li>0){li--;syncS();}};
+  document.querySelectorAll('#enzMode button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#enzMode button').forEach(x=>x.classList.toggle('on',x===b));nE=+b.dataset.m;while(enz.length<nE)enz.push(newE());enz.length=nE;document.getElementById('busyVal').textContent=`0/${nE}`;if(nE===6)used6=true;chk();});
+  function chk(){if(maxLi>=6&&used6)unlock('coll');else if(maxLi>=6&&!used6)toast('Now switch to 6 enzymes and watch the speed.');}
+})();
+
+/* ===== Part 4b: the graph ===== */
+(function(){
+  const el=document.getElementById('concGraph');if(!el)return;
+  const x0=70,x1=610,y0=290,K=14;
+  const px=s=>x0+(x1-x0)*s/100, curve=(V)=>{let d='';for(let s=0;s<=100;s+=2){const r=V*s/(K+s);d+=(s?'L':'M')+px(s).toFixed(1)+' '+(y0-r).toFixed(1);}return d;};
+  el.innerHTML=`<svg viewBox="0 0 640 340" style="width:100%;height:auto;display:block;font-family:Nunito,sans-serif">
+   <line x1="${x0}" y1="${y0}" x2="${x1+10}" y2="${y0}" stroke="#5E5672" stroke-width="2.5"/><line x1="${x0}" y1="${y0}" x2="${x0}" y2="20" stroke="#5E5672" stroke-width="2.5"/>
+   <text x="${(x0+x1)/2}" y="328" text-anchor="middle" font-size="16" font-weight="800" fill="#5E5672">Substrate concentration (how much substrate) →</text>
+   <text transform="translate(26 ${y0/2+20}) rotate(-90)" text-anchor="middle" font-size="16" font-weight="800" fill="#5E5672">Speed of reaction →</text>
+   <path d="${curve(250)}" fill="none" stroke="#FF8A1F" stroke-width="5" class="draw draw2" stroke-linecap="round"/>
+   <path d="${curve(125)}" fill="none" stroke="#6C4AB6" stroke-width="5" class="draw" stroke-linecap="round"/>
+   <g class="fadein" style="animation-delay:2.2s">
+     <text x="${x1-4}" y="${y0-118}" text-anchor="end" font-size="15" font-weight="800" fill="#6C4AB6">3 enzymes</text>
+     <text x="${x1-4}" y="${y0-232}" text-anchor="end" font-size="15" font-weight="800" fill="#FF8A1F">6 enzymes: higher top speed</text>
+     <rect x="300" y="${y0-170}" width="232" height="30" rx="8" fill="#F3EEFF"/><text x="416" y="${y0-150}" text-anchor="middle" font-size="14" font-weight="800" fill="#6C4AB6">Flat: every active site is busy</text>
+     <line x1="416" y1="${y0-140}" x2="416" y2="${y0-120}" stroke="#6C4AB6" stroke-width="2"/>
+     <rect x="96" y="${y0-60}" width="196" height="30" rx="8" fill="#FFF3C4"/><text x="194" y="${y0-40}" text-anchor="middle" font-size="14" font-weight="800" fill="#8A6400">Rising: more collisions</text>
+   </g></svg>`;
+})();
+
+/* ===== Part 5a: temperature ===== */
+(function(){
+  const o=cv('temp'),g=cv('tempGraph');if(!o)return;
+  const R=86,E={x:240,y:212};let T=20,dmg=0,acc=0,evs=[],reached=false;
+  const raw=t=>Math.exp(0.07*(t-37))/(1+Math.exp((t-40.9)/2.5));let MX=0;for(let t=0;t<=80;t+=0.5)MX=Math.max(MX,raw(t));
+  const rate=t=>raw(t)/MX;
+  const sl=document.getElementById('tSlide'),fresh=document.getElementById('freshEnz');
+  const jig=[...Array(14)].map(()=>({x:rnd(70,430),y:rnd(30,310),a:rnd(0,TAU)}));
+  function msg(){
+    const eff=rate(T)*(1-dmg);let m;
+    if(dmg>0.85&&T<44)m='Cooling him down does not fix him. Once the shape is destroyed, it stays destroyed, like a fried egg. The enzyme is denatured.';
+    else if(T<=15)m='Cold: molecules move slowly, so there are few collisions. Slow reactions.';
+    else if(T<=32)m='Warming up: molecules move faster, more collisions, faster reactions.';
+    else if(T<=37)m='About 37 °C: body temperature. This is the optimum. Fastest! 🔥';
+    else if(T<=41)m='Fever zone (38–41 °C): still working, but he is near his limit. A mild fever makes life harder for germs.';
+    else if(T<=50)m='Too hot! He is shaking so hard that his shape is changing. The active site is losing its shape.';
+    else m='Denatured. The active site has lost its shape, so the substrate cannot fit. The reaction stops.';
+    if(dmg>0.3&&T<44&&dmg<=0.85)m='Some of his shape was damaged by the heat, and that damage stays. He works more slowly now.';
+    document.getElementById('tSay').textContent=m;fresh.style.display=dmg>0.3?'':'none';
+  }
+  sl.oninput=()=>{T=+sl.value;document.getElementById('tVal').textContent=T+' °C';dmg=Math.max(dmg,clamp((T-44)/14,0,1));if(T>=60&&!reached){reached=true;unlock('temp');}msg();};
+  fresh.onclick=()=>{dmg=0;msg();toast('Here is a fresh enzyme 😎');};
+  msg();
+  const site=()=>sitePos(E.x,E.y,R,0);
+  sim(5,'temp',{tick(dt,t){
+    const {ctx,W,H}=o;const eff=rate(T)*(1-dmg),broken=dmg>0.5;
+    acc+=dt*(broken?0.8:Math.min(2.0,0.25+2.2*eff));
+    if(acc>1){acc=0;const a=rnd(-2.5,-0.64);evs.push({a,t:0,ok:!broken&&Math.random()<Math.max(0.15,eff*1.2)||(!broken&&eff>0.3)});}
+    ctx.clearRect(0,0,W,H);
+    // thermometer
+    const col=T<25?'#1E8FD0':T<42?'#22A863':T<52?'#FF8A1F':'#E8406E';
+    ctx.fillStyle='#fff';rr(ctx,22,24,22,262,11);ctx.strokeStyle='#CFC4B0';ctx.lineWidth=2;ctx.stroke();
+    const th=250*T/80;ctx.fillStyle=col;rr(ctx,26,280-th,14,th,7);ball(ctx,33,292,16,col);
+    // jiggling molecules
+    const sp=0.4+T/18;jig.forEach(j=>{j.a+=rnd(-1,1)*dt*4;j.x+=Math.cos(j.a)*sp*20*dt;j.y+=Math.sin(j.a)*sp*20*dt;if(j.x<70||j.x>430)j.a=Math.PI-j.a;if(j.y<20||j.y>320)j.a=-j.a;j.x=clamp(j.x,70,430);j.y=clamp(j.y,20,320);ball(ctx,j.x,j.y,3,'#D8CDE9');});
+    const k=clamp(dmg+(T>41?(T-41)/30:0),0,1)*1;
+    drawEnzyme(ctx,E.x,E.y,R,{k:Math.min(1,dmg*1.1),wob:T/80*0.8+dmg*0.9,t:t*(0.5+T/30),mood:dmg>0.5?-1:T>42?0:1,shades:dmg<0.6});
+    if(T>40&&dmg<0.9){for(let i=0;i<3;i++){const p=(t*1.2+i/3)%1;ctx.globalAlpha=1-p;ctx.fillStyle='#7CC7F2';ctx.beginPath();const x=E.x+R*0.7+i*8,y=E.y-R*0.3+p*40;ctx.arc(x,y,4,0,TAU);ctx.fill();ctx.globalAlpha=1;}}
+    const s=site();
+    evs.forEach(ev=>{ev.t+=dt;const from={x:s.x+Math.cos(ev.a)*230,y:s.y+Math.sin(ev.a)*230};
+      if(ev.ok){
+        if(ev.t<0.6){const q=ease(ev.t/0.6);drawSub(ctx,lerp(from.x,s.x,q),lerp(from.y,s.y,q),R,{rot:0});}
+        else if(ev.t<0.82){ctx.save();ctx.translate(E.x,E.y);subLocal(ctx,R,{});ctx.restore();}
+        else{const q=(ev.t-0.82)/0.8;drawSub(ctx,s.x-40-q*90,s.y-q*90,R,{part:'R',colorL:COL.pR,alpha:1-q});drawSub(ctx,s.x+40+q*90,s.y-q*90,R,{part:'V',colorR:COL.pV,alpha:1-q});}
+      }else{
+        const stop={x:lerp(from.x,s.x,0.82),y:lerp(from.y,s.y,0.82)};
+        if(ev.t<0.5){const q=ease(ev.t/0.5);drawSub(ctx,lerp(from.x,stop.x,q),lerp(from.y,stop.y,q),R,{eyes:true});}
+        else{const q=(ev.t-0.5)/0.7;drawSub(ctx,lerp(stop.x,from.x+(ev.a>-1.57?80:-80),q),lerp(stop.y,from.y,q),R,{eyes:true,alpha:1-q,rot:q*2});}
+      }});
+    evs=evs.filter(e=>e.t<1.7);
+    // graph
+    const G=g.ctx,GW=g.W,GH=g.H,gx=v=>50+(GW-70)*v/80,gy=v=>GH-48-(GH-90)*v;
+    G.clearRect(0,0,GW,GH);
+    G.fillStyle='#FFF0D9';G.fillRect(gx(38),20,gx(41)-gx(38),GH-68);label(G,'fever',gx(39.5),GH-58,{size:12,color:'#B85A00'});
+    G.strokeStyle='#5E5672';G.lineWidth=2;G.beginPath();G.moveTo(50,20);G.lineTo(50,GH-48);G.lineTo(GW-14,GH-48);G.stroke();
+    G.setLineDash([4,4]);G.strokeStyle='#BDB4CF';G.beginPath();G.moveTo(gx(37),gy(1));G.lineTo(gx(37),GH-48);G.stroke();G.setLineDash([]);
+    G.strokeStyle=COL.enz;G.lineWidth=4;G.beginPath();for(let v=0;v<=80;v+=1){const y=gy(rate(v));v?G.lineTo(gx(v),y):G.moveTo(gx(v),y);}G.stroke();
+    [0,20,40,60,80].forEach(v=>label(G,v+'°',gx(v),GH-34,{size:12,color:'#5E5672'}));
+    label(G,'Temperature (°C)',GW/2+20,GH-14,{size:13,color:'#5E5672'});
+    G.save();G.translate(18,GH/2-20);G.rotate(-Math.PI/2);label(G,'Speed of reaction',0,0,{size:13,color:'#5E5672'});G.restore();
+    label(G,'optimum 37 °C',gx(37)+12,gy(1)+4,{size:12,color:COL.enz,align:'left'});
+    if(dmg>0.05)ball(G,gx(T),gy(rate(T)),6,'#D8CDE9');
+    ball(G,gx(T),gy(eff),9,col);G.strokeStyle='#fff';G.lineWidth=2;G.beginPath();G.arc(gx(T),gy(eff),9,0,TAU);G.stroke();
+  }});
+})();
+
+/* ===== Part 5b: pH ===== */
+(function(){
+  const A=cv('phA'),P=cv('phP');if(!A)return;
+  let ph=null;const seen=new Set();
+  const act=(opt,v)=>v==null?0:Math.exp(-Math.pow((v-opt)/1.5,2));
+  const txt=a=>a>0.7?'Working well 👍':a>0.3?'Slowing down…':'Shape changed. Not working ❌';
+  document.querySelectorAll('#phZones button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#phZones button').forEach(x=>x.classList.toggle('on',x===b));
+    ph=+b.dataset.ph;seen.add(ph);
+    const a1=act(7,ph),a2=act(2,ph);
+    document.getElementById('phAbar').style.width=(a1*100)+'%';document.getElementById('phPbar').style.width=(a2*100)+'%';
+    document.getElementById('phAtxt').textContent=txt(a1);document.getElementById('phPtxt').textContent=txt(a2);
+    if(seen.size===3)unlock('ph');
+  });
+  const draw=(o,a,t)=>{const {ctx,W,H}=o;ctx.clearRect(0,0,W,H);const k=ph==null?0:clamp((1-a)*1.15,0,1);
+    drawEnzyme(ctx,W/2,H/2+22,46,{k,wob:k*0.8,t,mood:ph==null?1:a>0.6?1:a>0.3?0:-1,shades:k<0.6});
+    if(ph!=null&&a>0.5){ctx.save();ctx.translate(W/2,H/2+22);subLocal(ctx,46,{});ctx.restore();}
+    else if(ph!=null){const b=Math.abs(Math.sin(t*3))*14;drawSub(ctx,W/2+44,H/2-28-b,46,{eyes:true,rot:0.5});}};
+  sim(5,'phA',{tick(dt,t){draw(A,act(7,ph),t);draw(P,act(2,ph),t);}});
+})();
+
+/* ===== Part 6: cofactors ===== */
+(function(){
+  const o=cv('cof');if(!o)return;const {ctx,W,H}=o;
+  const R=104,E={x:230,y:205};
+  const TOK=[{id:'fe',em:'🥬',n:'Iron',s:'callaloo, red beans, liver',c:'#B5543C',sym:'Fe'},{id:'b',em:'🌾',n:'B vitamins',s:'whole grains, peas, eggs, fish',c:'#E0A100',sym:'B'},{id:'sug',em:'🍬',n:'Sugar',s:'sweet drinks, candy',c:'#ccc',sym:''},{id:'salt',em:'🧂',n:'Salt',s:'salt fish, chips',c:'#ccc',sym:''}];
+  const ST=[
+   {need:'fe',name:'Catalase',job:'breaks down harmful hydrogen peroxide into water and oxygen',title:'Some wingmen cannot work alone. This one is missing his sidekick.',
+    desc:'This is catalase from Part 1. It cleans up hydrogen peroxide, a harmful waste. Its helper should sit in the dotted gap. Pick the right helper from the food below.',
+    wrong:{b:'B vitamins help other enzymes, but catalase needs a mineral. Which mineral is in callaloo and red beans?',sug:'Sugar is fuel, not a helper. This enzyme needs a mineral.',salt:'Salt is not this enzyme\'s helper. Try again.'},
+    ok:'Fixed! Iron is the sidekick for catalase. Now the oxygen bubbles pour out.'},
+   {need:'b',name:'Energy enzyme',job:'helps release energy from glucose in every cell',title:'This wingman works in every cell, releasing energy from glucose.',
+    desc:'He is missing his sidekick too. This time the helper is a coenzyme made from a vitamin.',
+    wrong:{fe:'Iron helps catalase, but not this one. Think: which vitamins help release energy from food?',sug:'Sugar (glucose) is the substrate he works on, not his helper. Try again.',salt:'Salt is not this enzyme\'s helper. Try again.'},
+    ok:'Fixed! B vitamins become coenzymes for the enzymes that release energy from food. That is one reason a poor diet can leave you feeling tired.'}];
+  let si=0,fixed=false,fixT=0,drops=[],acc=0,count=0,bub=[];
+  const slot=()=>({x:E.x+R*0.74,y:E.y+R*0.36});
+  const tokEl=document.getElementById('cofTokens'),say=t=>document.getElementById('cofSay').textContent=t;
+  function stage(){
+    const s=ST[si];fixed=false;fixT=0;count=0;drops=[];bub=[];
+    document.getElementById('cofTitle').textContent=s.title;document.getElementById('cofName').textContent=s.name;document.getElementById('cofDesc').textContent=s.desc;say('');
+    tokEl.innerHTML='';
+    TOK.forEach(tk=>{const b=document.createElement('button');b.className='token';b.innerHTML=`<span class="em">${tk.em}</span>${tk.n}<small>${tk.s}</small>`;
+      b.onclick=()=>{if(fixed)return;
+        if(tk.id===s.need){fixed=true;b.classList.add('right');say(s.ok);
+          if(si===0){const n=document.createElement('button');n.className='btn sm';n.style.alignSelf='center';n.textContent='Next enzyme ▸';n.onclick=()=>{si=1;stage();};setTimeout(()=>tokEl.appendChild(n),900);}
+          else unlock('cof');}
+        else{b.classList.remove('wrongtry');void b.offsetWidth;b.classList.add('wrongtry');say(s.wrong[tk.id]);}};
+      tokEl.appendChild(b);});
+  }
+  stage();
+  sim(6,'cof',{tick(dt,t){
+    const s=ST[si];if(fixed)fixT=Math.min(1,fixT+dt*1.5);
+    const k=0.6*(1-fixT);
+    acc+=dt;if(acc>1.3){acc=0;drops.push({y:-30,t:0,st:'fall',vx:0,x:E.x});}
+    ctx.clearRect(0,0,W,H);
+    const sp=sitePos(E.x,E.y,R,0);
+    drawEnzyme(ctx,E.x,E.y,R,{k,wob:0.15,t,mood:fixed?1:-1,glow:fixed&&fixT<1?1-fixT:0});
+    const sl=slot();
+    if(!fixed||fixT<0.05){ctx.fillStyle='#FBF6EE';ctx.beginPath();ctx.arc(sl.x,sl.y,20,0,TAU);ctx.fill();ctx.setLineDash([5,4]);ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.stroke();ctx.setLineDash([]);label(ctx,'?',sl.x,sl.y+1,{size:20,color:'#fff'});}
+    else{const tk=TOK.find(x=>x.id===s.need);const r=20*Math.min(1,fixT*1.4);ball(ctx,sl.x,sl.y,r,tk.c);label(ctx,tk.sym,sl.x,sl.y+1,{size:16,color:'#fff'});}
+    drops.forEach(d=>{d.t+=dt;
+      if(d.st==='fall'){d.y+=170*dt;if(d.y>=sp.y){if(fixed&&fixT>0.6){d.st='dock';d.t=0;}else{d.st='bounce';d.vx=rnd(0,1)<0.5?-150:150;d.vy=-140;}}}
+      if(d.st==='dock'&&d.t>0.35){d.st='out';d.t=0;count++;if(si===0)for(let i=0;i<4;i++)bub.push({x:sp.x+rnd(-20,20),y:sp.y-20,r:rnd(4,8),v:rnd(40,80),life:1.6});}
+      if(d.st==='bounce'){d.x+=d.vx*dt;d.y+=d.vy*dt;d.vy+=400*dt;}
+      if(d.st==='fall'||d.st==='bounce')drawSub(ctx,d.x,d.y,R,{eyes:true,rot:d.st==='bounce'?d.t*3:0,alpha:d.st==='bounce'?Math.max(0,1-d.t):1});
+      else if(d.st==='dock'){ctx.save();ctx.translate(E.x,E.y);subLocal(ctx,R,{});ctx.restore();}
+      else if(d.st==='out'){const q=d.t/0.8;drawSub(ctx,sp.x-45-q*100,sp.y-q*80,R,{part:'R',colorL:COL.pR,alpha:Math.max(0,1-q)});drawSub(ctx,sp.x+45+q*100,sp.y-q*80,R,{part:'V',colorR:COL.pV,alpha:Math.max(0,1-q)});
+        if(si===1&&q<1){ctx.save();ctx.globalAlpha=1-q;label(ctx,'⚡',sp.x+rnd(-3,3),sp.y-30-q*60,{size:30});ctx.restore();}}
+    });
+    drops=drops.filter(d=>!(d.st==='out'&&d.t>0.8)&&!(d.st==='bounce'&&d.t>1));
+    bub.forEach(b=>{b.y-=b.v*dt;b.life-=dt;ctx.globalAlpha=clamp(b.life,0,1);ctx.strokeStyle='#1E8FD0';ctx.lineWidth=2;ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,TAU);ctx.stroke();ctx.globalAlpha=1;});bub=bub.filter(b=>b.life>0);
+    document.getElementById('cofCount').textContent=count;const st=document.getElementById('cofStat');const want=fixed?'✅ Working: helper in place':'❌ Not working: missing its helper';if(st.textContent!==want)st.textContent=want;
+  }});
+})();
+
+/* ===== Part 7: inhibitors ===== */
+(function(){
+  const o=cv('inh');if(!o)return;const {ctx,W,H}=o;
+  const R=92,E={x:380,y:258};let mode='none',k=0,items=[],prods=[],done=[],acc=0.6,blockT=0,tried=new Set();
+  const SAY={none:'Normal: every substrate fits the active site. Lots of reactions.',comp:'🎭 The fake key looks nearly like the substrate. It sits in the active site and blocks it. While it is there, real substrate bounces off.',non:'🤚 The arm-grabber holds the enzyme from the side. The enzyme is bent out of shape, so the active site no longer fits anything.'};
+  const say=()=>document.getElementById('inhSay').textContent=SAY[mode];say();
+  document.querySelectorAll('#inhMode button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#inhMode button').forEach(x=>x.classList.toggle('on',x===b));mode=b.dataset.m;items=items.filter(i=>i.kind==='sub'&&i.st==='fall');blockT=0;if(mode!=='none')tried.add(mode);if(tried.size===2)unlock('inh');say();});
+  sim(7,'inh',{tick(dt,t){
+    const now=t;k+=((mode==='non'?0.8:0)-k)*Math.min(1,dt*3);
+    const sp=sitePos(E.x,E.y,R,0);
+    acc-=dt;if(acc<=0){acc=1.0;const imp=mode==='comp'&&Math.random()<0.55;items.push({kind:imp?'imp':'sub',x:E.x,y:-40,st:'fall',t:0,vx:0,vy:170});}
+    if(blockT>0)blockT-=dt;
+    items.forEach(it=>{it.t+=dt;
+      if(it.st==='fall'){it.y+=it.vy*dt;if(it.y>=sp.y){
+        const free=blockT<=0&&!items.some(x=>x!==it&&(x.st==='dock'));
+        if(free&&mode!=='non'&&it.kind==='sub'){it.st='dock';it.t=0;}
+        else if(free&&mode==='comp'&&it.kind==='imp'){it.st='block';it.t=0;blockT=2.6;}
+        else{it.st='bounce';it.t=0;it.vx=Math.random()<0.5?-160:160;it.vy=-150;}}}
+      else if(it.st==='dock'&&it.t>0.35){it.st='gone';done.push(now);prods.push({x:sp.x,y:sp.y,t:0});}
+      else if(it.st==='block'&&it.t>2.6){it.st='leave';it.t=0;}
+      else if(it.st==='bounce'||it.st==='leave'){it.x+=(it.st==='leave'?-90:it.vx)*dt;it.y+=(it.st==='leave'?-160:it.vy)*dt;if(it.st==='bounce')it.vy+=420*dt;}
+    });
+    items=items.filter(it=>it.st!=='gone'&&it.y<H+60&&it.y>-80&&!(it.st==='bounce'&&it.t>1.4)&&!(it.st==='leave'&&it.t>1.2));
+    prods.forEach(p=>p.t+=dt);prods=prods.filter(p=>p.t<1);
+    done=done.filter(x=>now-x<10);document.getElementById('inhRate').textContent=done.length;
+    feteBg(o,t);
+    drawEnzyme(ctx,E.x,E.y,R,{k,wob:k*0.5,t,mood:mode==='none'?1:mode==='comp'?0:-1});
+    if(mode==='non'||k>0.1){const a=clamp(k/0.8,0,1);const gx=E.x+R*0.9,gy=E.y+R*0.42;ctx.globalAlpha=a;ball(ctx,gx+14,gy+6,30,'#2b1d3d');ctx.strokeStyle='#E8406E';ctx.lineWidth=3;ctx.stroke();
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(gx+6,gy,5,0,TAU);ctx.arc(gx+24,gy,5,0,TAU);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(gx,gy-10);ctx.lineTo(gx+10,gy-6);ctx.moveTo(gx+30,gy-10);ctx.lineTo(gx+20,gy-6);ctx.stroke();
+      label(ctx,'🤚',gx-18,gy-18,{size:28});ctx.globalAlpha=1;}
+    items.forEach(it=>{
+      const imp=it.kind==='imp';const op={variant:imp?'IMP':'RV',color:imp?COL.imp:COL.sub,eyes:true,frown:imp};
+      if(it.st==='dock'||it.st==='block'){ctx.save();ctx.translate(E.x,E.y);subLocal(ctx,R,op);ctx.restore();}
+      else drawSub(ctx,it.x,it.y,R,Object.assign(op,{rot:it.st==='bounce'?it.t*4*(it.vx>0?1:-1):0,alpha:it.st==='bounce'?Math.max(0,1-it.t/1.4):1}));
+    });
+    prods.forEach(p=>{const q=ease(p.t);drawSub(ctx,p.x-45-q*120,p.y-q*100,R,{part:'R',colorL:COL.pR,alpha:1-p.t});drawSub(ctx,p.x+45+q*120,p.y-q*100,R,{part:'V',colorR:COL.pV,alpha:1-p.t});});
+    if(mode==='comp')label(ctx,'🎭 = fake key',90,H-24,{size:15,color:'#FFB3C6'});
+  }});
+})();
+
+
+document.getElementById('wmBody').setAttribute('d',enzymeSVGPath(40));
+/* ===== start-up ===== */
+document.querySelectorAll('[data-quiz]').forEach(el=>renderQuiz(el,el.dataset.quiz,QUIZ[el.dataset.quiz]));
+document.querySelectorAll('[data-sort]').forEach(el=>renderSort(el,el.dataset.sort,SORT_S1,['Breaking down','Building up']));
+document.querySelectorAll('[data-predict]').forEach(el=>renderPredict(el,el.dataset.predict,PREDICT[el.dataset.predict]));
+document.querySelectorAll('[data-explain]').forEach(el=>renderExplain(el,el.dataset.explain,EXPLAIN[el.dataset.explain]));
+predictHooks.s3=()=>{LOCK.enable();document.getElementById('lockSay').textContent='Now drag each molecule onto the pocket at the top of the enzyme.';};
+setupBodyMap('bm1','explore');setupBodyMap('bm8','lights');
+function fillPredBacks(){
+  document.getElementById('predBack4').textContent=predLine('s4',PREDICT.s4);
+  document.getElementById('predBack5').textContent=predLine('s5',PREDICT.s5);
+}
+enterHooks[4]=[fillPredBacks];enterHooks[5]=[fillPredBacks];
+stepHooks['4:2']=[fillPredBacks];stepHooks['5:2']=[fillPredBacks];
+stepHooks['8:4']=[showResults];enterHooks[8]=[()=>{if((S.steps[8]||0)>=4)showResults();}];
+initScore();
+window.__ready=true;updateScore();
+go(S.sec||0);
+requestAnimationFrame(loop);
+
+</script>
+</body>
+</html>
